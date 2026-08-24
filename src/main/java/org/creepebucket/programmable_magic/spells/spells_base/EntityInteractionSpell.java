@@ -1,17 +1,12 @@
 package org.creepebucket.programmable_magic.spells.spells_base;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
-import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
@@ -45,10 +40,6 @@ public abstract class EntityInteractionSpell extends SpellItemLogic implements S
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            Entity target = (Entity) paramsList.get(1);
-            Vec3 delta = (Vec3) paramsList.get(0);
-            target.teleportTo(target.getX() + delta.x, target.getY() + delta.y, target.getZ() + delta.z);
-            target.hurtMarked = true;
             return ExecutionResult.SUCCESS(this);
         }
     }
@@ -77,16 +68,6 @@ public abstract class EntityInteractionSpell extends SpellItemLogic implements S
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            Entity target = (Entity) paramsList.get(1);
-            ItemStack potionStack = (ItemStack) paramsList.get(0);
-
-            if (!(target instanceof LivingEntity living)) {
-                SpellExceptions.INVALID_INPUT(this, List.of(SpellValueType.fromValue(potionStack), SpellValueType.fromValue(target)), inputTypes).throwIt(caster);
-                return ExecutionResult.ERRORED();
-            }
-
-            PotionContents potionContents = potionStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-            potionContents.applyToLivingEntity(living, potionStack.getOrDefault(DataComponents.POTION_DURATION_SCALE, 1.0F));
             return ExecutionResult.SUCCESS(this);
         }
     }
@@ -99,8 +80,6 @@ public abstract class EntityInteractionSpell extends SpellItemLogic implements S
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            ItemStack stack = (ItemStack) paramsList.get(0);
-            caster.getInventory().placeItemBackInInventory(stack);
             return ExecutionResult.SUCCESS(this);
         }
     }
