@@ -103,8 +103,9 @@ public class Coordinate {
         return new Coordinate((sw, sh) -> sw / 2 + deltaX, (sw, sh) -> sh + deltaY);
     }
 
-    public static Coordinate custom(double ratioX, int deltaX, double ratioY, int deltaY) {
-        return new Coordinate((sw, sh) -> (int) (sw * ratioX + deltaX), (sw, sh) -> (int) (sh * ratioY + deltaY));
+    public static Coordinate custom(Number ratioX, Number deltaX, Number ratioY, Number deltaY) {
+        return new Coordinate((sw, sh) -> (int) (sw * ratioX.doubleValue() + deltaX.doubleValue()),
+                (sw, sh) -> (int) (sh * ratioY.doubleValue() + deltaY.doubleValue()));
     }
 
     /**

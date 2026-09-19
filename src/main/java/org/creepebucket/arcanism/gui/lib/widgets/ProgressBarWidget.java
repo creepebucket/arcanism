@@ -1,7 +1,6 @@
 package org.creepebucket.arcanism.gui.lib.widgets;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.network.chat.Component;
 import org.creepebucket.arcanism.gui.lib.api.Coordinate;
 import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
 import org.creepebucket.arcanism.gui.lib.api.SmoothedValue;
@@ -9,16 +8,15 @@ import org.creepebucket.arcanism.gui.lib.api.Widget;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Renderable;
 
-
-import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
 import static net.minecraft.network.chat.Component.literal;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.fromCenterLeft;
 
 public class ProgressBarWidget extends Widget implements Renderable, Lifecycle {
     public DynamicValue<Double> numerator, denominator;
     public SmoothedValue smoothed = new SmoothedValue(0);
     public NumberDisplayWidget ratioWidget;
     public TextWidget textWidget;
-    public double lastFillX = 0;
+    public boolean hideText = false;
 
     public ProgressBarWidget(Coordinate pos, Coordinate size, DynamicValue<Double> numerator, DynamicValue<Double> denominator) {
         super(pos, size);
@@ -27,6 +25,11 @@ public class ProgressBarWidget extends Widget implements Renderable, Lifecycle {
         this.denominator = denominator;
 
         smoothedValues.add(smoothed);
+    }
+
+    public ProgressBarWidget hideText() {
+        hideText = true;
+        return this;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class ProgressBarWidget extends Widget implements Renderable, Lifecycle {
             ratioWidget.mainColor(0x9f000000);
         }
 
-        if (h() >= 9) {
+        if (h() >= 9 && !hideText) {
             textWidget.enable();
             ratioWidget.enable();
         } else {

@@ -553,4 +553,20 @@ public class MachineWidgets {
         }
     }
 
+    public static class TextWindow extends InformationWindowWidget {
+        public Widget textWidget;
+
+        public TextWindow(Coordinate pos, int defaultWidth, Component text) {
+            var w = new MultilineTextWidget(fromTopLeft(7, 19), fromTopLeft(defaultWidth, 0), text);
+            textWidget = w;
+            super(pos, fromTopLeft(defaultWidth, w.originalPos.y.apply(0, 0) + 26), Component.translatable("gui.arcanism.machine.window.info"), defaultWidth, w.originalPos.y.apply(0, 0) + 26);
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+            addChild(textWidget);
+            this.originalSize = fromTopLeft(textWidget.originalSize.x.apply(0, 0) + 14, textWidget.originalSize.y.apply(0, 0) + 26);
+        }
+    }
 }

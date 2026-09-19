@@ -2,7 +2,9 @@ package org.creepebucket.arcanism.gui.lib.widgets;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import org.creepebucket.arcanism.client.ClientUiContext;
 import org.creepebucket.arcanism.gui.lib.api.Coordinate;
 import org.creepebucket.arcanism.gui.lib.api.Widget;
@@ -19,13 +21,14 @@ public class TextWidget extends Widget implements Renderable {
     /**
      * 文本内容提供器
      */
-    private Component text;
+    public Component text;
     public double scale = 1;
     public boolean shadow = true;
 
     public TextWidget(Coordinate pos, Component text) {
         super(pos, ZERO);
-        setText(text);
+        this.text = text;
+        updateSize();
     }
 
     public Component getText() {
@@ -34,11 +37,15 @@ public class TextWidget extends Widget implements Renderable {
 
     public TextWidget setText(Component text) {
         this.text = text;
+        updateSize();
+        return this;
+    }
+
+    public void updateSize() {
         Font font = ClientUiContext.getFont();
         int w = (int) Math.round(font.width(text) * scale);
         int h = (int) Math.round(font.lineHeight * scale);
         originalSize = fromTopLeft(w, h);
-        return this;
     }
 
     public TextWidget scaled(double fact) {
@@ -71,6 +78,10 @@ public class TextWidget extends Widget implements Renderable {
     }
 
     public static void drawScaledString(GuiGraphicsExtractor guiGraphics, Font font, Component text, float x, float y, float scale, int color, boolean dropShadow) {
+        drawScaledString(guiGraphics, font, Language.getInstance().getVisualOrder(text), x, y, scale, color, dropShadow);
+    }
+
+    public static void drawScaledString(GuiGraphicsExtractor guiGraphics, Font font, FormattedCharSequence text, float x, float y, float scale, int color, boolean dropShadow) {
         Matrix3x2fStack poseStack = guiGraphics.pose();
 
         poseStack.pushMatrix();
