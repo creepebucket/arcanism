@@ -12,6 +12,7 @@ import org.creepebucket.arcanism.gui.lib.api.widgets.Tickable;
 
 
 import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
+import static org.creepebucket.arcanism.utils.ModUtils.roundDouble;
 
 public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, MouseDraggable, Tickable {
     public double min, max, step = 1, preciseValue;
@@ -32,7 +33,6 @@ public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, 
     @Override
     public void onInitialize() {
         filled = new SmoothedValue(value.get() * (w() - 2) / max);
-        value.whenFirstDataArrivesDo(() -> preciseValue = value.get());
 
         addChild(new RectangleWidget(fromCenterRight(0, 0), fromTopRight(0, 1)).dw(filled.multiply(-1).minus(3)).rightAlign().mainColor(bgColor()));
         addChild(new RectangleWidget(fromCenterLeft(0, 0), fromTopLeft(0, 1)).dw(filled));
@@ -42,6 +42,7 @@ public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, 
     @Override
     public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
         focus = true;
+        preciseValue = value.get();
         return true;
     }
 
@@ -55,7 +56,7 @@ public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, 
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         if (focus) {
             preciseValue += dragX * max / (w() - 2);
-            value.set(Math.clamp(preciseValue - preciseValue % step, min, max));
+            value.set(roundDouble(Math.clamp(preciseValue - preciseValue % step, min, max)));
 
             filled.set(value.get() * (w() - 2) / max);
         }

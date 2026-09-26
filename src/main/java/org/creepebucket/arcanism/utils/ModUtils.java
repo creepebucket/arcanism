@@ -83,24 +83,24 @@ public class ModUtils {
                 return "∞" + " ".repeat(stringLength - 1);
             } else if (value < 10) {
                 // 不可以log的情况
-                return String.format("%." + (stringLength - 3) + "f", value) + " ";
+                return String.format("%0" + Math.max(1, stringLength - 1) + "." + Math.max(0, stringLength - 3) + "f", value) + " ";
             } else if (value >= 1e27) {
                 // 使用科学计数法
                 var man = value / Math.pow(10, exp);
 
                 int expDecimals = exp <= 1 ? 1 : (int) Math.ceil(Math.log10(exp));
-                return String.format("%." + (stringLength - 4 - expDecimals) + "f", man) + "e" + exp + " ";
+                return String.format("%0" + Math.max(1, stringLength - 2 - expDecimals) + "." + Math.max(0, stringLength - 4 - expDecimals) + "f", man) + "e" + exp + " ";
             } else if (value >= 1000) {
                 // 使用前缀
                 int index = (int) Math.floor((double) exp / 3);
                 var man = value / Math.pow(10, index * 3);
                 int manDecimals = man <= 1 ? 1 : (int) Math.floor(Math.log10(man)) + 1;
 
-                return String.format("%." + (stringLength - 3 - manDecimals) + "f", man) + " " + prefixes[index];
+                return String.format("%0" + Math.max(1, stringLength - 2) + "." + Math.max(0, stringLength - 3 - manDecimals) + "f", man) + " " + prefixes[index];
             } else {
                 // 直接输出
                 int manDecimals = value <= 1 ? 1 : (int) Math.floor(Math.log10(value)) + 1;
-                return String.format("%." + (stringLength - 2 - manDecimals) + "f", value) + " ";
+                return String.format("%0" + Math.max(1, stringLength - 1) + "." + Math.max(0, stringLength - 2 - manDecimals) + "f", value) + " ";
             }
         } catch (UnknownFormatConversionException _) {
             System.out.println("prm数字转换出错: " + value + " " + stringLength);
@@ -291,5 +291,9 @@ public class ModUtils {
                 QuartPos.fromBlock(pos.getZ()));
         var noiseTemp = Climate.unquantizeCoord(climate.temperature());
         return noiseTemp * 50 + 273.15;
+    }
+
+    public static double roundDouble(double value) {
+        return Math.round(value * 1e10) / 1e10;
     }
 }

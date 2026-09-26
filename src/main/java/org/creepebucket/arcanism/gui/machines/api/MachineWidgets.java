@@ -94,8 +94,8 @@ public class MachineWidgets {
                 var targetX = dw.target + dragX;
                 var targetY = dh.target + dragY;
 
-                targetX = Math.clamp(targetX, minW - originalW(), getScreenW() - originalX() - originalW());
-                targetY = Math.clamp(targetY, minH - originalH(), getScreenH() - originalY() - originalH());
+                targetX = Math.clamp(targetX, minW - originalW(), getScreenW() - x() - originalW());
+                targetY = Math.clamp(targetY, minH - originalH(), getScreenH() - y() - originalH());
 
                 dw.set(targetX);
                 dh.set(targetY);

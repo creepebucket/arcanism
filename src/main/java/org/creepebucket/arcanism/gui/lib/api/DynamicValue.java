@@ -31,6 +31,10 @@ public class DynamicValue<T> {
 		return this;
 	}
 
+    public LocalValue<T> copyToLocal() {
+        return DynamicValue.localValue(get());
+    }
+
     /**
      * 从函数里拆, 适用于DynamicValue<Map<?, ?>> 拆键的情况
      */
@@ -47,19 +51,24 @@ public class DynamicValue<T> {
         };
     }
 
-    public static <T> DynamicValue<T> staticValue(T value) {
-        return new StaticValue<>(value);
+    public static <T> LocalValue<T> staticValue(T value) {
+        return new LocalValue<>(value, true);
+    }
+    public static <T> LocalValue<T> localValue(T value) {
+        return new LocalValue<>(value, false);
     }
 
     /**
-     * 固定值, 适用于一些特殊情况
+     * 本地值, 适用于一些特殊情况
      */
-    public static class StaticValue<T> extends DynamicValue<T> {
+    public static class LocalValue<T> extends DynamicValue<T> {
+        boolean isStatic;
         T value;
 
-        public StaticValue(T value) {
+        public LocalValue(T value, boolean isStatic) {
             super(null, null);
             this.value = value;
+            this.isStatic = isStatic;
         }
 
         @Override
@@ -69,7 +78,7 @@ public class DynamicValue<T> {
 
         @Override
         public void set(T value) {
-            // 不允许写入
+            this.value = isStatic ? this.value : value;
         }
     }
 }

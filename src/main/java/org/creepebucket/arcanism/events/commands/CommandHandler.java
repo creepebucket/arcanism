@@ -148,10 +148,42 @@ public abstract class CommandHandler {
 			var posBranch = literal("pos")
 				.then(argument("pos", BlockPosArgument.blockPos()).then(manaArgs));
 
+			var fillTree = literal("fill")
+				.then(literal("id")
+					.then(argument("network_id", LongArgumentType.longArg())
+						.suggests(SUGGEST_NETWORK_IDS)
+						.executes(ctx -> { handleFill(ctx); return 1; })))
+				.then(literal("pos")
+					.then(argument("pos", BlockPosArgument.blockPos())
+						.executes(ctx -> { handleFill(ctx); return 1; })));
+
+			var emptyTree = literal("empty")
+				.then(literal("id")
+					.then(argument("network_id", LongArgumentType.longArg())
+						.suggests(SUGGEST_NETWORK_IDS)
+						.executes(ctx -> { handleEmpty(ctx); return 1; })))
+				.then(literal("pos")
+					.then(argument("pos", BlockPosArgument.blockPos())
+						.executes(ctx -> { handleEmpty(ctx); return 1; })));
+
 			return literal("network")
 				.then(literal("set")
 					.then(idBranch)
-					.then(posBranch));
+					.then(posBranch))
+				.then(fillTree)
+				.then(emptyTree);
+		}
+
+		public Long resolveNetworkId(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+			if (ctx.getNodes().stream().anyMatch(n -> n.getNode().getName().equals("network_id"))) {
+				return ctx.getArgument("network_id", Long.class);
+			}
+			BlockPos pos = BlockPosArgument.getBlockPos(ctx, "pos");
+			if (!(ctx.getSource().getLevel().getBlockEntity(pos) instanceof NetNodeBlockEntity node)) {
+				ctx.getSource().sendFailure(Component.translatable("message.arcanism.command.not_mana_node"));
+				return null;
+			}
+			return node.getData(ModAttachments.NETWORK_ID);
 		}
 
 		@Override
@@ -164,17 +196,8 @@ public abstract class CommandHandler {
 			double p = ctx.getArgument("pressure", Double.class) * 1000.0;
 			Mana mana = new Mana(r, t, m, p);
 
-			Long networkId;
-			if (ctx.getNodes().stream().anyMatch(n -> n.getNode().getName().equals("network_id"))) {
-				networkId = ctx.getArgument("network_id", Long.class);
-			} else {
-				BlockPos pos = BlockPosArgument.getBlockPos(ctx, "pos");
-				if (!(level.getBlockEntity(pos) instanceof NetNodeBlockEntity node)) {
-					ctx.getSource().sendFailure(Component.translatable("message.arcanism.command.not_mana_node"));
-					return;
-				}
-				networkId = node.getData(ModAttachments.NETWORK_ID);
-			}
+			Long networkId = resolveNetworkId(ctx);
+			if (networkId == null) return;
 
 			var data = NetworkManaManager.getManaData(level, networkId);
 			data.setCurrent(mana);
@@ -182,6 +205,34 @@ public abstract class CommandHandler {
 			NetworkManaManager.touch(level, networkId);
 
 			ctx.getSource().sendSuccess(() -> Component.translatable("message.arcanism.command.network_set", networkId, r, t, m, p), true);
+		}
+
+		public void handleFill(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+			var level = ctx.getSource().getLevel();
+
+			Long networkId = resolveNetworkId(ctx);
+			if (networkId == null) return;
+
+			var data = NetworkManaManager.getManaData(level, networkId);
+			data.setCurrent(data.getCache());
+			NetworkManaManager.update(data);
+			NetworkManaManager.touch(level, networkId);
+
+			ctx.getSource().sendSuccess(() -> Component.translatable("message.arcanism.command.network_fill", networkId), true);
+		}
+
+		public void handleEmpty(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+			var level = ctx.getSource().getLevel();
+
+			Long networkId = resolveNetworkId(ctx);
+			if (networkId == null) return;
+
+			var data = NetworkManaManager.getManaData(level, networkId);
+			data.setCurrent(new Mana());
+			NetworkManaManager.update(data);
+			NetworkManaManager.touch(level, networkId);
+
+			ctx.getSource().sendSuccess(() -> Component.translatable("message.arcanism.command.network_empty", networkId), true);
 		}
 	}
 }

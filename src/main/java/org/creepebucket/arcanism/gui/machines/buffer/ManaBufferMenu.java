@@ -18,6 +18,7 @@ public class ManaBufferMenu extends MachineMenu {
 	public DynamicValue<Double> baseStorage, baseExpansion, baseExpansionPower, maxChargePower;
 	public DynamicValue<Integer> chargeSlotCount;
 	public DynamicValue<Double> powerFact;
+	public DynamicValue<Double> chargeRate;
 	public boolean enabled_synced;
 	public SimpleContainer chargeContainer;
 	public int chargeSlotStart;
@@ -65,7 +66,8 @@ public class ManaBufferMenu extends MachineMenu {
 		baseExpansionPower = registerData("base_expansion_power", SyncMode.S2C, 0d);
 		maxChargePower = registerData("max_charge_power", SyncMode.S2C, 0d);
 		chargeSlotCount = registerData("charge_slot_count", SyncMode.S2C, 0);
-		powerFact = registerData("power_fact", SyncMode.BOTH, 1d);
+		powerFact = registerData("power_fact", SyncMode.BOTH, 0d);
+		chargeRate = registerData("charge_rate", SyncMode.BOTH, 1d);
 	}
 
 	@Override
@@ -78,10 +80,12 @@ public class ManaBufferMenu extends MachineMenu {
 		chargeSlotCount.set(blockEntity.chargeSlotCount);
 		if (!enabled_synced) {
 			powerFact.set(blockEntity.powerFact);
+			chargeRate.set(blockEntity.chargeRate);
 			enabled_synced = true;
 			enabled.set(blockEntity.enabled);
 		}
 		blockEntity.powerFact = powerFact.get();
+		blockEntity.chargeRate = chargeRate.get();
 		blockEntity.setChanged();
 	}
 }

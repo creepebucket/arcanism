@@ -1,6 +1,5 @@
 package org.creepebucket.arcanism.gui.lib.widgets;
 
-import net.minecraft.network.chat.Component;
 import org.creepebucket.arcanism.gui.lib.api.Color;
 import org.creepebucket.arcanism.gui.lib.api.Coordinate;
 import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
@@ -8,19 +7,17 @@ import org.creepebucket.arcanism.gui.lib.api.Widget;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Tickable;
 
-import java.util.Objects;
-
-
-import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
-import static net.minecraft.network.chat.Component.literal;
-
 import static java.lang.Double.parseDouble;
+import static net.minecraft.network.chat.Component.literal;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.fromTopLeft;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.fromTopRight;
+import static org.creepebucket.arcanism.utils.ModUtils.roundDouble;
 
 public class NumberInputWidget extends Widget implements Lifecycle, Tickable {
     public DynamicValue<Double> num;
     public double min, max, step = 1, fact = 10;
     public int depth = 2;
-    public boolean showMinMax = true, buttonPressed = false;
+    public boolean showMinMax = true;
     public InputBoxWidget inputBox;
 
     public NumberInputWidget(Coordinate pos, Coordinate size, DynamicValue<Double> num, double min, double max) {
@@ -35,8 +32,8 @@ public class NumberInputWidget extends Widget implements Lifecycle, Tickable {
     public void onInitialize() {
         // 最值按钮
         if (showMinMax) {
-            addChild(new TextButtonWidget(fromTopLeft(0, 0), fromTopLeft(h(), h()), literal("|<"), () -> {num.set(min); buttonPressed = true;}));
-            addChild(new TextButtonWidget(fromTopRight(0, 0), fromTopLeft(h(), h()), literal(">|"), () -> {num.set(max); buttonPressed = true;}).rightAlign());
+            addChild(new TextButtonWidget(fromTopLeft(0, 0), fromTopLeft(h(), h()), literal("|<"), () -> num.set(min)));
+            addChild(new TextButtonWidget(fromTopRight(0, 0), fromTopLeft(h(), h()), literal(">|"), () -> num.set(max)).rightAlign());
         }
 
         // 普通按钮
@@ -44,41 +41,36 @@ public class NumberInputWidget extends Widget implements Lifecycle, Tickable {
             int finalI = i;
             addChild(new TextButtonWidget(fromTopLeft((h() + 1) * i + (showMinMax ? h() + 1 : 0), 0), fromTopLeft(h(), h()),
                     literal("<".repeat(depth - i)), () -> {
-                num.set(Math.max(min, num.get() - step * Math.pow(fact, depth - finalI - 1)));
-                buttonPressed = true;
+                num.set(Math.max(min, roundDouble(num.get() - step * Math.pow(fact, depth - finalI - 1))));
             }));
-            addChild(new TextButtonWidget(fromTopLeft(w() - (h() + 1) * i - (showMinMax ? h() + 1 : 0), 0), fromTopLeft(h(), h()),
+            addChild(new TextButtonWidget(fromTopRight(-(h() + 1) * i - (showMinMax ? h() + 1 : 0), 0), fromTopLeft(h(), h()),
                     literal(">".repeat(depth - i)), () -> {
-                num.set(Math.min(max, num.get() + step * Math.pow(fact, depth - finalI - 1)));
-                buttonPressed = true;
+                num.set(Math.min(max, roundDouble(num.get() + step * Math.pow(fact, depth - finalI - 1))));
             }).rightAlign());
         }
 
         // 输入框
-        inputBox = (InputBoxWidget) addChild(new InputBoxWidget(fromTopLeft((h() + 1) * depth + (showMinMax ? h() + 1 : 0), 0), fromTopLeft(w() - 2 * ((h() + 1) * depth + (showMinMax ? h() + 1 : 0)), h()),
+        inputBox = (InputBoxWidget) addChild(new InputBoxWidget(fromTopLeft((h() + 1) * depth + (showMinMax ? h() + 1 : 0), 0), fromTopRight(-2 * ((h() + 1) * depth + (showMinMax ? h() + 1 : 0)), h()),
                 String.valueOf(num.get()), 1024).mainColor(new Color(0)));
     }
 
     @Override
     public void tick() {
-        if (!buttonPressed && !Objects.equals(String.valueOf(num.get()), inputBox.box.getValue())) {
-            try {
-                var d = parseDouble(inputBox.box.getValue());
-                num.set(Math.clamp(d, min, max));
-                if (d != num.get()) {
-                    inputBox.box.setValue(String.valueOf(num.get()));
-                }
-                inputBox.bgColor(bgColor()).tooltip(null);
-            } catch (NumberFormatException e) {
-                if (!inputBox.box.getValue().isEmpty() && !inputBox.box.getValue().equals("-")) {
-                    inputBox.box.setValue(String.valueOf(num.get()));
-                }
-            }
-        } else if (buttonPressed) {
+        if (!inputBox.box.isFocused()) {
             inputBox.box.setValue(String.valueOf(num.get()));
+            return;
         }
-
-        buttonPressed = false;
+        try {
+            var d = parseDouble(inputBox.box.getValue());
+            var clamped = Math.clamp(d, min, max);
+            if (clamped != num.get()) num.set(clamped);
+            if (clamped != d) inputBox.box.setValue(String.valueOf(clamped));
+            inputBox.bgColor(bgColor()).tooltip(null);
+        } catch (NumberFormatException e) {
+            if (!inputBox.box.getValue().isEmpty() && !inputBox.box.getValue().equals("-")) {
+                inputBox.box.setValue(String.valueOf(num.get()));
+            }
+        }
     }
 
     public NumberInputWidget setDepth(int depth) {

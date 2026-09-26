@@ -9,8 +9,8 @@ public class MediumManaBufferBlockEntity extends ManaBufferBlockEntity {
 	public MediumManaBufferBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.MEDIUM_MANA_BUFFER_BLOCK_ENTITY.get(), pos, state);
 		baseStorage = 5e9;
-		baseExpansion = baseStorage * 0.2;
-		baseExpansionPower = baseStorage * 0.005;
+		baseExpansion = 7e9;
+		baseExpansionPower = 720000;
 		maxChargePower = 5e6;
 		chargeSlotCount = 3;
 		connectHeight = 3;
