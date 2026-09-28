@@ -9,6 +9,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.arcanism.Arcanism;
+import org.creepebucket.arcanism.utils.StoredMana;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,12 @@ public class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("auther", builder -> builder
                     .persistent(Codec.STRING)
                     .networkSynchronized(ByteBufCodecs.STRING_UTF8));
+
+    // 物品魔力存储：当前值与容量
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<StoredMana>> MANA =
+            DATA_COMPONENTS.registerComponentType("mana", builder -> builder
+                    .persistent(StoredMana.CODEC)
+                    .networkSynchronized(StoredMana.STREAM_CODEC));
 
     public static void register(IEventBus eventBus) {
         DATA_COMPONENTS.register(eventBus);

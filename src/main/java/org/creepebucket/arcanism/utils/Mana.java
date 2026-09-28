@@ -2,6 +2,9 @@ package org.creepebucket.arcanism.utils;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +22,13 @@ public final class Mana {
                     Codec.DOUBLE.fieldOf("momentum").forGetter(Mana::getMomentum),
                     Codec.DOUBLE.fieldOf("pressure").forGetter(Mana::getPressure)
             ).apply(instance, Mana::new)
+    );
+    public static final StreamCodec<ByteBuf, Mana> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.DOUBLE, Mana::getRadiation,
+            ByteBufCodecs.DOUBLE, Mana::getTemperature,
+            ByteBufCodecs.DOUBLE, Mana::getMomentum,
+            ByteBufCodecs.DOUBLE, Mana::getPressure,
+            Mana::new
     );
     private final Map<String, Double> values;
 
@@ -125,5 +135,15 @@ public final class Mana {
                 values.get(TEMPERATURE) > mana.getTemperature() ||
                 values.get(MOMENTUM) > mana.getMomentum() ||
                 values.get(PRESSURE) > mana.getPressure();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Mana mana && values.equals(mana.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return values.hashCode();
     }
 }

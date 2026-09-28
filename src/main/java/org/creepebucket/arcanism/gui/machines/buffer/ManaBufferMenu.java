@@ -48,7 +48,12 @@ public class ManaBufferMenu extends MachineMenu {
 
 	public ManaBufferMenu(int containerId, Inventory playerInv, InteractionHand hand) {
 		super(ModMenuTypes.MANA_BUFFER_MENU.get(), containerId, playerInv, hand, Menu::init);
-		chargeContainer = new SimpleContainer(5);
+	}
+
+	@Override
+	public void setBlockPos(BlockPos pos) {
+		super.setBlockPos(pos);
+		chargeContainer = ((ManaBufferBlockEntity) playerInv.player.level().getBlockEntity(pos)).chargeContainer;
 		chargeSlotStart = slots.size();
 		for (int i = 0; i < 5; i++) addSlot(new Slot(chargeContainer, i, -99, -99));
 	}
