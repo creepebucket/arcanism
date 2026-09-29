@@ -10,6 +10,9 @@ public class ModConfig {
 	public final ModConfigSpec.DoubleValue fuelValueMultiplier;
 	public final ModConfigSpec.BooleanValue moreBalancedFuel;
 	public final ModConfigSpec.BooleanValue disableAnimations;
+	public final ModConfigSpec.DoubleValue castMass;
+	public final ModConfigSpec.DoubleValue breakEnergyPerHardness;
+	public final ModConfigSpec.DoubleValue globalCastCostMult;
 
 	static {
 		Pair<ModConfig, ModConfigSpec> pair = new ModConfigSpec.Builder()
@@ -73,6 +76,18 @@ public class ModConfig {
 		moreBalancedFuel = builder.comment("使燃料热值更贴近现实")
 				.translation("arcanism.config.more_balanced_fuel")
 				.define("more_balanced_fuel", false);
+
+		castMass = builder.comment("法术消耗计算使用的固定质量(kg)")
+				.translation("arcanism.config.cast_mass")
+				.defineInRange("cast_mass", 70.0, 0.0, Double.MAX_VALUE);
+
+		breakEnergyPerHardness = builder.comment("每点方块硬度对应的破坏魔力消耗(J)")
+				.translation("arcanism.config.break_energy_per_hardness")
+				.defineInRange("break_energy_per_hardness", 1e6, 0.0, Double.MAX_VALUE);
+
+		globalCastCostMult = builder.comment("所有法术魔力消耗的全局乘数")
+				.translation("arcanism.config.global_cast_cost_mult")
+				.defineInRange("global_cast_cost_mult", 1.0, 0.0, Double.MAX_VALUE);
 
 		builder.pop();
 

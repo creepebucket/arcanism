@@ -11,7 +11,7 @@ public class MediumManaBufferBlockEntity extends ManaBufferBlockEntity {
 		baseStorage = 5e9;
 		baseExpansion = 7e9;
 		baseExpansionPower = 720000;
-		maxChargePower = 5e6;
+		maxChargePower = 1e7;
 		chargeSlotCount = 3;
 		connectHeight = 3;
 	}

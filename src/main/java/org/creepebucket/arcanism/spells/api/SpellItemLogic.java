@@ -2,6 +2,7 @@ package org.creepebucket.arcanism.spells.api;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.arcanism.ModConfig;
 import org.creepebucket.arcanism.entities.SpellEntity;
 import org.creepebucket.arcanism.spells.SpellValueType;
 import org.creepebucket.arcanism.spells.spells_compute.ValueLiteralSpell;
@@ -84,6 +85,13 @@ public abstract class SpellItemLogic implements Cloneable {
     public abstract Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity);
 
     /*
+     * 应用全局消耗乘数后的魔力消耗
+     */
+    public Mana getScaledManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return getManaCost(caster, spellSequence, paramsList, spellEntity).scale(ModConfig.CONFIG.globalCastCostMult.get());
+    }
+
+    /*
      * 带检验的法术执行
      * 通常情况下, 请调用我而不是 run
      */
@@ -134,12 +142,15 @@ public abstract class SpellItemLogic implements Cloneable {
         if (!canRun(caster, spellSequence, paramsList, spellEntity)) return ExecutionResult.ERRORED();
 
         // 最后检查魔力是否足够
-        if (getManaCost(caster, spellSequence, paramsList, spellEntity).anyGreaterThan(spellEntity.availableMana)) {
+        if (getScaledManaCost(caster, spellSequence, paramsList, spellEntity).anyGreaterThan(spellEntity.availableMana)) {
             SpellExceptions.NOT_ENOUGH_MANA(this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
 
         // 保证可以运行再运行
+
+        // 扣魔力
+        spellEntity.availableMana = spellEntity.availableMana.subtract(getScaledManaCost(caster, spellSequence, paramsList, spellEntity));
 
         // 插件的运行前逻辑
         for (ItemStack plugin : spellEntity.pluginItems)
@@ -150,9 +161,6 @@ public abstract class SpellItemLogic implements Cloneable {
         // 插件的运行后逻辑
         for (ItemStack plugin : spellEntity.pluginItems)
             getPlugin(plugin.getItem()).afterSpellExecution(spellEntity, this, spellEntity.spellData, spellSequence, paramsList);
-
-        // 扣魔力
-        spellEntity.availableMana = spellEntity.availableMana.subtract(getManaCost(caster, spellSequence, paramsList, spellEntity));
 
         if (result.returnValue == null) return result;
 

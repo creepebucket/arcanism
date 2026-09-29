@@ -11,11 +11,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.creepebucket.arcanism.ModConfig;
 import org.creepebucket.arcanism.events.machines.BasicMachineTooltip;
+import org.creepebucket.arcanism.gui.lib.api.Color;
 import org.creepebucket.arcanism.items.api.ModItemExtensions;
 import org.creepebucket.arcanism.mananet.machines.BasicMachine;
+import org.creepebucket.arcanism.registries.ModDataComponents;
 import org.creepebucket.arcanism.registries.WandPluginRegistry;
+import org.creepebucket.arcanism.utils.ModColors;
 import org.creepebucket.arcanism.utils.ModUtils;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 import static org.creepebucket.arcanism.Arcanism.MODID;
 
@@ -39,6 +44,14 @@ public class ItemTooltipHandler {
                     ModUtils.formattedNumber(burnTime * ModConfig.CONFIG.fuelValueMultiplier.get())));
         }
 
+        var storedMana = event.getItemStack().get(ModDataComponents.MANA.get());
+        if (storedMana != null) {
+            appendManaRow(event.getToolTip(), "R", storedMana.current.getRadiation(), storedMana.capacity.getRadiation(), ModColors.MAIN_COLOR_R);
+            appendManaRow(event.getToolTip(), "T", storedMana.current.getTemperature(), storedMana.capacity.getTemperature(), ModColors.MAIN_COLOR_T);
+            appendManaRow(event.getToolTip(), "M", storedMana.current.getMomentum(), storedMana.capacity.getMomentum(), ModColors.MAIN_COLOR_M);
+            appendManaRow(event.getToolTip(), "P", storedMana.current.getPressure(), storedMana.capacity.getPressure(), ModColors.MAIN_COLOR_P);
+        }
+
         if (event.getItemStack().getItem() instanceof ModItemExtensions ext) {
             ext.appendTooltip(event.getItemStack(), event.getToolTip(), ctrl, shift, alt);
             return;
@@ -53,5 +66,19 @@ public class ItemTooltipHandler {
         if (WandPluginRegistry.isPlugin(item)) {
             WandPluginRegistry.getPlugin(item).appendTooltip(event.getItemStack(), event.getToolTip(), ctrl, shift, alt);
         }
+    }
+
+    public static void appendManaRow(List<Component> tooltip, String key, double current, double capacity, Color color) {
+        if (capacity <= 0) return;
+
+        int barLength = 36;
+        int filled = (int) Math.round(current / capacity * barLength);
+        int argb = color.toArgb();
+
+        var row = Component.literal(key + " " + ModUtils.FormattedManaString(current) + " ").withColor(argb);
+        row.append(Component.literal("|".repeat(filled)).withColor(argb));
+        row.append(Component.literal("|".repeat(barLength - filled)).withColor(0xFF808080));
+        row.append(Component.literal(" " + ModUtils.FormattedManaString(capacity) + " (" + String.format("%.1f", current / capacity * 100) + "%)").withColor(argb));
+        tooltip.add(row);
     }
 }

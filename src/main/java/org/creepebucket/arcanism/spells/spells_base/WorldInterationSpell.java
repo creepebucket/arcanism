@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.creepebucket.arcanism.ModConfig;
 import org.creepebucket.arcanism.entities.SpellEntity;
 import org.creepebucket.arcanism.spells.SpellValueType;
 import org.creepebucket.arcanism.spells.api.ExecutionResult;
@@ -53,6 +54,14 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
             spellEntity.level().destroyBlock(pos, false, caster);
             return ExecutionResult.RETURNED(this, List.of(new ItemStack(state.getBlock().asItem())), List.of(SpellValueType.ITEM));
         }
+
+        @Override
+        public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            BlockPos pos = spellEntity.blockPosition();
+            float hardness = spellEntity.level().getBlockState(pos).getDestroySpeed(spellEntity.level(), pos);
+            if (hardness < 0) return new Mana();
+            return new Mana(0.0, 0.0, 0.0, ModConfig.CONFIG.breakEnergyPerHardness.get() * hardness);
+        }
     }
 
     public static class MineBlockSpell extends WorldInterationSpell {
@@ -75,6 +84,14 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
             for (int i = 0; i < drops.size(); i++) types.add(SpellValueType.ITEM);
             return ExecutionResult.RETURNED(this, values, types);
         }
+
+        @Override
+        public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            BlockPos pos = spellEntity.blockPosition();
+            float hardness = spellEntity.level().getBlockState(pos).getDestroySpeed(spellEntity.level(), pos);
+            if (hardness < 0) return new Mana();
+            return new Mana(0.0, 0.0, 0.0, ModConfig.CONFIG.breakEnergyPerHardness.get() * hardness * 2);
+        }
     }
 
     public static class PlaceBlockSpell extends WorldInterationSpell {
@@ -95,6 +112,11 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
             spellEntity.level().setBlockAndUpdate(pos, blockItem.getBlock().defaultBlockState());
             return ExecutionResult.SUCCESS(this);
         }
+
+        @Override
+        public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            return new Mana(0.0, 0.0, 0.0, 101325.0);
+        }
     }
 
     public static class ExplosionSpell extends WorldInterationSpell {
@@ -108,6 +130,12 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
             float radius = (float) Math.cbrt((Double) paramsList.get(0));
             spellEntity.level().explode(spellEntity, spellEntity.getX(), spellEntity.getY(), spellEntity.getZ(), radius, false, Level.ExplosionInteraction.BLOCK);
             return ExecutionResult.SUCCESS(this);
+        }
+
+        @Override
+        public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            double energy = 41840.0 * (Double) paramsList.get(0);
+            return new Mana(0.0, energy / 2, 0.0, energy / 2);
         }
     }
 }

@@ -88,6 +88,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 
 		// 充能逻辑
 		var budget = entity.chargeRate * entity.maxChargePower / 20d;
+		var somethingChanged = false;
 		for (int i = 0; i < entity.chargeSlotCount; i++) {
 			var stack = entity.chargeContainer.getItem(i);
 			var stored = stack.get(ModDataComponents.MANA.get());
@@ -99,6 +100,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 				stored = new StoredMana(stored.current.add(new Mana(planToChargeR, 0d, 0d, 0d)), stored.capacity);
 				network.setLoadW(new Mana(planToChargeR * 20, 0d, 0d, 0d));
 				budget -= planToChargeR;
+				somethingChanged = true;
 			}
 
 			// t
@@ -107,6 +109,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 				stored = new StoredMana(stored.current.add(new Mana(0d, planToChargeT, 0d, 0d)), stored.capacity);
 				network.setLoadW(new Mana(0d, planToChargeT * 20, 0d, 0d));
 				budget -= planToChargeT;
+				somethingChanged = true;
 			}
 
 			// m
@@ -115,6 +118,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 				stored = new StoredMana(stored.current.add(new Mana(0d, 0d, planToChargeM, 0d)), stored.capacity);
 				network.setLoadW(new Mana(0d, 0d, planToChargeM * 20, 0d));
 				budget -= planToChargeM;
+				somethingChanged = true;
 			}
 
 			// p
@@ -123,10 +127,12 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 				stored = new StoredMana(stored.current.add(new Mana(0d, 0d, 0d, planToChargeP)), stored.capacity);
 				network.setLoadW(new Mana(0d, 0d, 0d, planToChargeP * 20));
 				budget -= planToChargeP;
+				somethingChanged = true;
 			}
 
 			stack.set(ModDataComponents.MANA.get(), stored);
 		}
-		entity.chargeContainer.setChanged();
+
+		if (somethingChanged) entity.chargeContainer.setChanged();
 	}
 }

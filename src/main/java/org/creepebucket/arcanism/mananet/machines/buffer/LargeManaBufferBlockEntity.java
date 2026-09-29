@@ -11,7 +11,7 @@ public class LargeManaBufferBlockEntity extends ManaBufferBlockEntity {
 		baseStorage = 3e10;
 		baseExpansion = 5e10;
 		baseExpansionPower = 2880000;
-		maxChargePower = 5e6;
+		maxChargePower = 5e7;
 		chargeSlotCount = 5;
 		connectHeight = 4;
 	}

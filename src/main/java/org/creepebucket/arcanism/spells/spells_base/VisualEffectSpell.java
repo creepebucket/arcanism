@@ -59,5 +59,10 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
 
             return ExecutionResult.SUCCESS(this);
         }
+
+        @Override
+        public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            return new Mana(10000.0, 0.0, 0.0, 0.0);
+        }
     }
 }
