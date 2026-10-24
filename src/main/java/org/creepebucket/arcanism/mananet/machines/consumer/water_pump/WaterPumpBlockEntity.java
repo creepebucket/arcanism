@@ -53,31 +53,33 @@ public class WaterPumpBlockEntity extends MachineBlockEntity implements GeoBlock
 		return geoCache;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, WaterPumpBlockEntity entity) {
+	@Override
+	public void tick(Level level, BlockPos pos, BlockState state) {
+		super.tick(level, pos, state);
 		if (level.isClientSide()) return;
 
 		var pending = pos.relative(level.getBlockState(pos).getValue(BasicMachine.FACING).getOpposite()).above();
 		if (level.getBlockEntity(pending) instanceof NetNodeBlockEntity) {
-			entity.connect(level, pending, Direction.DOWN, Direction.DOWN);
+			connect(level, pending, Direction.DOWN, Direction.DOWN);
 		}
 
-		var networkData = entity.getNetworkData();
-		networkData.setCache(new Mana(2000d, 2000d, 2000d, 2000d));
+		var networkData = getNetworkData();
+		setCache(new Mana(2000d, 2000d, 2000d, 2000d));
 
-		var load = new Mana(Math.pow(4, entity.powerFact - 1) * 300, 0d, 2000 * entity.powerFact, 0d);
+		var load = new Mana(Math.pow(4, this.powerFact - 1) * 300, 0d, 2000 * this.powerFact, 0d);
 
 		var shouldBeWater = level.getBlockState(pos.relative(level.getBlockState(pos).getValue(BasicMachine.FACING).getOpposite()).below());
-		if (!networkData.canProduce(load) || !entity.enabled || !shouldBeWater.is(WATER)) {
-			entity.power = 0;
+		if (!networkData.canProduce(load) || !this.enabled || !shouldBeWater.is(WATER)) {
+			this.power = 0;
 			return;
 		}
-		networkData.setLoadW(load);
-		entity.power = entity.powerFact * 1000;
+		setLoadW(load);
+		this.power = this.powerFact * 1000;
 
 		var water = FluidResource.of(Fluids.WATER);
-		var fluidHandler = entity.fluidStorage.get(new RelativeBlockPos(0, 0, 0));
+		var fluidHandler = this.fluidStorage.get(new RelativeBlockPos(0, 0, 0));
 		var maxSpace = fluidHandler.getCapacityAsInt(0, water) - fluidHandler.getAmountAsInt(0);
-		var waterToProduce = Math.min(maxSpace, (int) entity.power / 40);
+		var waterToProduce = Math.min(maxSpace, (int) this.power / 40);
 		if (waterToProduce > 0) {
 			try (var transaction = Transaction.openRoot()) {
 				if (fluidHandler.insert(0, water, waterToProduce, transaction) == waterToProduce) {

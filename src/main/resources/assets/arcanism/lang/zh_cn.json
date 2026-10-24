@@ -658,6 +658,8 @@
   "arcanism.config.client_side_interpolation.tooltip": "启用服务端数据的客户端插值。启用插值后不会改变服务端的数据回传时间, 只是以数据延迟为代价平滑数据值",
   "arcanism.config.client_interpolation_window": "插值时间窗口",
   "arcanism.config.client_interpolation_window.tooltip": "在多长的时间范围内平滑服务端数据(刻)",
+  "arcanism.config.mana_net_split_mode": "网络分割魔力分配",
+  "arcanism.config.mana_net_split_mode.tooltip": "魔力网络因拓扑改变而分割时, 网络中已有魔力的分配方式",
   "arcanism.config.server_data_sync_interval": "数据回传间隔",
   "arcanism.config.server_data_sync_interval.tooltip": "改变服务端多数数据(机器魔力/工作进度等)的同步间隔(刻). 可能会对网络有一定影响",
   "arcanism.configuration.gameplay": "玩法",

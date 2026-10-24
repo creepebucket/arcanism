@@ -94,7 +94,9 @@ public class WindTurbineBlockEntity extends MachineBlockEntity implements GeoBlo
         windSpeedAltitudeFact = Math.pow(Math.max(altitude / 10, 1), windShearExponent);
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, WindTurbineBlockEntity entity) {
+    @Override
+    public void tick(Level level, BlockPos pos, BlockState state) {
+        super.tick(level, pos, state);
         if (level.isClientSide()) return;
 
         // ========== 发电计算逻辑 ========== //
@@ -102,17 +104,17 @@ public class WindTurbineBlockEntity extends MachineBlockEntity implements GeoBlo
         //              空气密度             //
 
         var time = level.getOverworldClockTime() % 24000;
-        var tempKelvin = (15 + 273.15) / entity.airDensityTempFactBase + 10 * Math.sin((Math.PI * 2 / 24000) * time);
+        var tempKelvin = (15 + 273.15) / this.airDensityTempFactBase + 10 * Math.sin((Math.PI * 2 / 24000) * time);
         var tempFact = (15 + 273.15) / tempKelvin;
-        var airDensity = entity.airDensityBase * tempFact * entity.airDensityPressureFact * entity.airDensityHumidFact;
+        var airDensity = this.airDensityBase * tempFact * this.airDensityPressureFact * this.airDensityHumidFact;
 
-        entity.airDensityTempFact = tempFact;
-        entity.airDensity = airDensity;
+        this.airDensityTempFact = tempFact;
+        this.airDensity = airDensity;
 
         //               风速               //
 
-        var windSpeedBase = entity.windSpeedBase;
-        var altitudeFact = entity.windSpeedAltitudeFact;
+        var windSpeedBase = this.windSpeedBase;
+        var altitudeFact = this.windSpeedAltitudeFact;
 
         // 时间乘数
         var timeFact = 0.174167 * Math.sin((Math.PI / 12000) * time - (Math.PI / 3)) + 0.975833; // 回归出来的, 不要纠结...
@@ -127,21 +129,21 @@ public class WindTurbineBlockEntity extends MachineBlockEntity implements GeoBlo
 
         //              实际功率             //
 
-        var power = 0.5 * entity.airDensity * 6 * windSpeed * windSpeed * windSpeed * 0.25;
+        var power = 0.5 * this.airDensity * 6 * windSpeed * windSpeed * windSpeed * 0.25;
 
-        entity.windSpeedTimeFact = timeFact;
-        entity.windSpeedWeatherFact = weatherFact;
-        entity.windSpeed = windSpeed;
-        entity.power = entity.enabled ? power : 0;
-        entity.setData(ModAttachments.WIND_TURBINE_POWER, entity.power);
+        this.windSpeedTimeFact = timeFact;
+        this.windSpeedWeatherFact = weatherFact;
+        this.windSpeed = windSpeed;
+        this.power = this.enabled ? power : 0;
+        setData(ModAttachments.WIND_TURBINE_POWER, this.power);
 
-        entity.getNetworkData().setLoadW(new Mana(0d, 0d, -entity.power, 0d));
-        entity.getNetworkData().setCache(new Mana(2000d, 2000d, 2000d, 2000d));
+        setLoadW(new Mana(0d, 0d, -this.power, 0d));
+        setCache(new Mana(2000d, 2000d, 2000d, 2000d));
 
         // ========== 网络连接逻辑 ========== //
 
         if (!level.isClientSide() && level.getBlockEntity(pos.above(5)) instanceof NetNodeBlockEntity) {
-            entity.connect(level, pos.above(5), Direction.DOWN, Direction.UP);
+            connect(level, pos.above(5), Direction.DOWN, Direction.UP);
         }
     }
 }

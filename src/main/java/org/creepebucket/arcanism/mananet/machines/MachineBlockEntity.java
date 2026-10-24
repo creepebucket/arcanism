@@ -2,6 +2,7 @@ package org.creepebucket.arcanism.mananet.machines;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -13,6 +14,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.creepebucket.arcanism.mananet.NetNodeBlockEntity;
+import org.creepebucket.arcanism.utils.Mana;
 import org.creepebucket.arcanism.utils.RelativeBlockPos;
 
 import java.util.HashMap;
@@ -46,6 +48,11 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 			}
 		}
 
+	}
+
+	public void tick(Level level, BlockPos pos, BlockState state) {
+		loadCopy = new Mana();
+		cacheCopy = new Mana();
 	}
 
 	public ResourceHandler<ItemResource> getItemHandler(RelativeBlockPos pos) {

@@ -56,7 +56,7 @@ public class WindTurbine extends BasicMachine {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (type == ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get()) {
-            return (lvl, pos, st, blockEntity) -> WindTurbineBlockEntity.tick(lvl, pos, st, (WindTurbineBlockEntity) blockEntity);
+            return (lvl, pos, st, blockEntity) -> ((WindTurbineBlockEntity) blockEntity).tick(lvl, pos, st);
         }
         return null;
     }

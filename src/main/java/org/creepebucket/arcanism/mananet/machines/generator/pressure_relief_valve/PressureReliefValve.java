@@ -66,7 +66,7 @@ public class PressureReliefValve extends BasicMachine {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModBlockEntities.PRESSURE_RELIEF_VALVE_BLOCK_ENTITY.get()) {
-			return (lvl, pos, st, blockEntity) -> PressureReliefValveBlockEntity.tick(lvl, pos, st, (PressureReliefValveBlockEntity) blockEntity);
+			return (lvl, pos, st, blockEntity) -> ((PressureReliefValveBlockEntity) blockEntity).tick(lvl, pos, st);
 		}
 		return null;
 	}

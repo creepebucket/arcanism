@@ -131,3 +131,7 @@ runs/
 /mezz/
 /docs/
 /.settings/
+
+# Python 缓存与虚拟环境
+__pycache__/
+/src/main/resources/.venv-assets/

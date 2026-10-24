@@ -48,7 +48,9 @@ public class SolarPanelBlockEntity extends MachineBlockEntity implements GeoBloc
         //
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, SolarPanelBlockEntity entity) {
+    @Override
+    public void tick(Level level, BlockPos pos, BlockState state) {
+        super.tick(level, pos, state);
         if (level.isClientSide()) return;
 
         // ========== 发电计算逻辑 ========== //
@@ -56,16 +58,16 @@ public class SolarPanelBlockEntity extends MachineBlockEntity implements GeoBloc
         //             太阳辐照度             //
 
         if (level.isThundering()) {
-            entity.weatherFactDiffuse = 0.15;
-            entity.weatherFactDirect = 0.05;
+            this.weatherFactDiffuse = 0.15;
+            this.weatherFactDirect = 0.05;
         }
         else if (level.isRaining()) {
-            entity.weatherFactDiffuse = 1.2;
-            entity.weatherFactDirect = 0.5;
+            this.weatherFactDiffuse = 1.2;
+            this.weatherFactDirect = 0.5;
         }
         else {
-            entity.weatherFactDiffuse = 1;
-            entity.weatherFactDirect = 1;
+            this.weatherFactDiffuse = 1;
+            this.weatherFactDirect = 1;
         }
 
         var time = level.getOverworldClockTime() % 24000;
@@ -74,40 +76,40 @@ public class SolarPanelBlockEntity extends MachineBlockEntity implements GeoBloc
         var alphaDeg = Math.toDegrees(alpha);
 
         // Kasten-Young 公式
-        entity.airMass = time < 12000 ? 1.0 / (Math.sin(alpha) + 0.50572 * Math.pow(alphaDeg + 6.07995, -1.6364)) : Double.MAX_VALUE;
-        var directIrradianceFact = Math.pow(entity.atmosphericTransmittanceDirect, entity.airMass * entity.altitudeFact);
-        entity.directIrradiance = entity.solarConstant * directIrradianceFact * entity.weatherFactDirect;
+        this.airMass = time < 12000 ? 1.0 / (Math.sin(alpha) + 0.50572 * Math.pow(alphaDeg + 6.07995, -1.6364)) : Double.MAX_VALUE;
+        var directIrradianceFact = Math.pow(this.atmosphericTransmittanceDirect, this.airMass * this.altitudeFact);
+        this.directIrradiance = this.solarConstant * directIrradianceFact * this.weatherFactDirect;
 
         // Hottel 散射关系
-        entity.atmosphericTransmittanceDiffuse = Math.max(0.2710 - 0.2939 * directIrradianceFact, 0) * smoothstep(0, 6, Math.toDegrees(alpha));
-        entity.diffuseIrradiance = 50 * entity.atmosphericTransmittanceDiffuse * entity.weatherFactDiffuse;
+        this.atmosphericTransmittanceDiffuse = Math.max(0.2710 - 0.2939 * directIrradianceFact, 0) * smoothstep(0, 6, Math.toDegrees(alpha));
+        this.diffuseIrradiance = 50 * this.atmosphericTransmittanceDiffuse * this.weatherFactDiffuse;
 
         //              效率系数              //
 
-        entity.cellTemperature = entity.baseTemperature + 30 * Math.sin((Math.PI * 2 / 24000) * time) + 15;
-        entity.thermalFact = 1 - .005 * (entity.cellTemperature - 25 - 273.15);
-        entity.efficiencyFact = entity.thermalFact * entity.materialFact * 100;
+        this.cellTemperature = this.baseTemperature + 30 * Math.sin((Math.PI * 2 / 24000) * time) + 15;
+        this.thermalFact = 1 - .005 * (this.cellTemperature - 25 - 273.15);
+        this.efficiencyFact = this.thermalFact * this.materialFact * 100;
 
         // ========== 网络连接逻辑 ========== //
 
         if (!level.isClientSide() && level.getBlockEntity(pos.east(1)) instanceof NetNodeBlockEntity) {
-            entity.connect(level, pos.east(1), Direction.WEST, Direction.EAST);
+            connect(level, pos.east(1), Direction.WEST, Direction.EAST);
         }
         if (!level.isClientSide() && level.getBlockEntity(pos.west(1)) instanceof NetNodeBlockEntity) {
-            entity.connect(level, pos.west(1), Direction.EAST, Direction.WEST);
+            connect(level, pos.west(1), Direction.EAST, Direction.WEST);
         }
         if (!level.isClientSide() && level.getBlockEntity(pos.south(1)) instanceof NetNodeBlockEntity) {
-            entity.connect(level, pos.south(1), Direction.NORTH, Direction.SOUTH);
+            connect(level, pos.south(1), Direction.NORTH, Direction.SOUTH);
         }
         if (!level.isClientSide() && level.getBlockEntity(pos.north(1)) instanceof NetNodeBlockEntity) {
-            entity.connect(level, pos.north(1), Direction.SOUTH, Direction.NORTH);
+            connect(level, pos.north(1), Direction.SOUTH, Direction.NORTH);
         }
 
-        entity.power = entity.enabled ? (entity.directIrradiance + entity.diffuseIrradiance) * entity.panelArea * entity.efficiencyFact * 0.01 : 0;
-        var load = new Mana(-entity.power, 0d, 0d, 0d);
+        this.power = this.enabled ? (this.directIrradiance + this.diffuseIrradiance) * this.panelArea * this.efficiencyFact * 0.01 : 0;
+        var load = new Mana(-this.power, 0d, 0d, 0d);
 
-        if (entity.getNetworkData().canProduce(load)) entity.getNetworkData().setLoadW(load);
-        entity.getNetworkData().setCache(new Mana(2000d, 2000d, 2000d, 2000d));
+        if (getNetworkData().canProduce(load)) setLoadW(load);
+        setCache(new Mana(2000d, 2000d, 2000d, 2000d));
     }
 
     private static double smoothstep(double edge0, double edge1, double x) {

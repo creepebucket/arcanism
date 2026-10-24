@@ -58,31 +58,32 @@ public class PressureReliefValveBlockEntity extends MachineBlockEntity implement
 		return geoCache;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, PressureReliefValveBlockEntity entity) {
+	@Override
+	public void tick(Level level, BlockPos pos, BlockState state) {
+		super.tick(level, pos, state);
 		if (level.isClientSide()) return;
 
 		// 连接到魔力网络
 		var facing = level.getBlockState(pos).getValue(BasicMachine.FACING).getOpposite();
 		var pending = pos.relative(facing).above();
 		if (level.getBlockEntity(pending) instanceof NetNodeBlockEntity) {
-			entity.connect(level, pending, Direction.DOWN, Direction.DOWN);
+			connect(level, pending, Direction.DOWN, Direction.DOWN);
 		}
 
 		// 设置缓存上限
-		var networkData = entity.getNetworkData();
-		networkData.setCache(new Mana(2000d, 2000d, 2000d, 200000000d));
+		setCache(new Mana(2000d, 2000d, 2000d, 200000000d));
 
-		entity.manaPowerW = 0;
+		this.manaPowerW = 0;
 
-		if (!entity.enabled) return;
+		if (!this.enabled) return;
 
 		// 获取流体IO
-		var block = (BasicMachine) entity.getBlockState().getBlock();
+		var block = (BasicMachine) getBlockState().getBlock();
 		RelativeBlockPos fluidInputPos = null;
 		for (var entry : block.IO_DEFINITION.entrySet()) {
 			if (entry.getValue().equals("fluid_input")) fluidInputPos = entry.getKey();
 		}
-		var fluidInput = fluidInputPos != null ? entity.fluidStorage.get(fluidInputPos) : null;
+		var fluidInput = fluidInputPos != null ? this.fluidStorage.get(fluidInputPos) : null;
 		if (fluidInput == null) return;
 
 		// 匹配配方
@@ -95,17 +96,17 @@ public class PressureReliefValveBlockEntity extends MachineBlockEntity implement
 		var recipe = optional.get().value();
 
 		// 换配方重置未产出魔力
-		if (!recipe.inputFluid().equals(entity.recipeInputId)) {
-			entity.unoutputtedMana = 0d;
-			entity.recipeInputId = recipe.inputFluid();
+		if (!recipe.inputFluid().equals(this.recipeInputId)) {
+			this.unoutputtedMana = 0d;
+			this.recipeInputId = recipe.inputFluid();
 		}
 
 		double inputPerUnit = recipe.inputAmount();
 		double heatPerUnit = recipe.heatPerLiter() * inputPerUnit;
 
 		// 预期功率决定流体消耗速率, 实际功率决定产魔速率
-		double expectedPower = 1e6 * 5 * (Math.pow(entity.powerFact + 0.5, 2) - 0.25);
-		double actualPower = 1e6 * entity.powerFact;
+		double expectedPower = 1e6 * 5 * (Math.pow(this.powerFact + 0.5, 2) - 0.25);
+		double actualPower = 1e6 * this.powerFact;
 
 		// 效率系数
 		double eff = expectedPower > 0 ? actualPower / expectedPower : 0d;
@@ -115,13 +116,13 @@ public class PressureReliefValveBlockEntity extends MachineBlockEntity implement
 		double hiddenManaFromInput = inputFluidAmount * heatPerUnit / inputPerUnit;
 
 		// 可用魔力 = 流体存量限制 + 上轮累积未产出
-		double hiddenMana = hiddenManaFromInput + entity.unoutputtedMana;
+		double hiddenMana = hiddenManaFromInput + this.unoutputtedMana;
 
 		// 本 tick 消耗的原始魔力(上限为预期功率)
 		double consumedRawMana = Math.min(hiddenMana, expectedPower / 20);
 
 		// 消耗配方数量的流体
-		double recipeConsumeMult = Math.ceil((consumedRawMana - entity.unoutputtedMana) / heatPerUnit);
+		double recipeConsumeMult = Math.ceil((consumedRawMana - this.unoutputtedMana) / heatPerUnit);
 
 		if (recipeConsumeMult > 0) {
 			try (var transaction = Transaction.openRoot()) {
@@ -132,12 +133,12 @@ public class PressureReliefValveBlockEntity extends MachineBlockEntity implement
 		}
 
 		// 按实际效率产魔
-		networkData.setLoadW(new Mana(0d, 0d, 0d, -consumedRawMana * 20 * eff));
-		entity.manaPowerW = consumedRawMana * 20 * eff;
+		setLoadW(new Mana(0d, 0d, 0d, -consumedRawMana * 20 * eff));
+		this.manaPowerW = consumedRawMana * 20 * eff;
 
 		// 剩余未产出魔力留到下 tick
-		entity.unoutputtedMana -= consumedRawMana - heatPerUnit * recipeConsumeMult;
+		this.unoutputtedMana -= consumedRawMana - heatPerUnit * recipeConsumeMult;
 
-		entity.setChanged();
+		setChanged();
 	}
 }

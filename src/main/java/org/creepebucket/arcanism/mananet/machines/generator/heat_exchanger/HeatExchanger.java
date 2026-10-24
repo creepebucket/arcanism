@@ -59,7 +59,7 @@ public class HeatExchanger extends BasicMachine {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModBlockEntities.HEAT_EXCHANGER_BLOCK_ENTITY.get()) {
-			return (lvl, pos, st, blockEntity) -> HeatExchangerBlockEntity.tick(lvl, pos, st, (HeatExchangerBlockEntity) blockEntity);
+			return (lvl, pos, st, blockEntity) -> ((HeatExchangerBlockEntity) blockEntity).tick(lvl, pos, st);
 		}
 		return null;
 	}

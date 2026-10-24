@@ -48,7 +48,7 @@ public class SmallManaBuffer extends BasicMachine {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModBlockEntities.SMALL_MANA_BUFFER_BLOCK_ENTITY.get()) {
-			return (lvl, pos, st, blockEntity) -> ManaBufferBlockEntity.tick(lvl, pos, st, (ManaBufferBlockEntity) blockEntity);
+			return (lvl, pos, st, blockEntity) -> ((ManaBufferBlockEntity) blockEntity).tick(lvl, pos, st);
 		}
 		return null;
 	}

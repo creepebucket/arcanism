@@ -57,7 +57,7 @@ public class WaterPump extends BasicMachine {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get()) {
-			return (lvl, pos, st, blockEntity) -> WaterPumpBlockEntity.tick(lvl, pos, st, (WaterPumpBlockEntity) blockEntity);
+			return (lvl, pos, st, blockEntity) -> ((WaterPumpBlockEntity) blockEntity).tick(lvl, pos, st);
 		}
 		return null;
 	}

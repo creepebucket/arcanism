@@ -658,6 +658,8 @@
   "arcanism.config.client_side_interpolation.tooltip": "Interpolate server data on the client. Enabling this does not change the server's sync timing, it only smooths values at the cost of latency",
   "arcanism.config.client_interpolation_window": "Interpolation Time Window",
   "arcanism.config.client_interpolation_window.tooltip": "Time range (ticks) over which server data is smoothed",
+  "arcanism.config.mana_net_split_mode": "Mana Split On Network Split",
+  "arcanism.config.mana_net_split_mode.tooltip": "How the stored mana is distributed when a mana network is split by a topology change",
   "arcanism.config.server_data_sync_interval": "Server Data Sync Interval",
   "arcanism.config.server_data_sync_interval.tooltip": "Sync interval (ticks) for most server data (machine mana/work progress, etc). May affect network traffic",
   "arcanism.configuration.gameplay": "Gameplay",

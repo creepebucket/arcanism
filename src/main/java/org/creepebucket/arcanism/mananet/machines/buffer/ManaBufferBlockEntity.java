@@ -68,29 +68,31 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 		return geoCache;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, ManaBufferBlockEntity entity) {
+	@Override
+	public void tick(Level level, BlockPos pos, BlockState state) {
+		super.tick(level, pos, state);
 		if (level.isClientSide()) return;
 
-		var network = entity.getNetworkData();
+		var network = getNetworkData();
 
 		// 扩容逻辑
-		var neededPower = new Mana((Math.pow(11, entity.powerFact) - 1) * entity.baseExpansionPower, 0d, 0d, 0d);
+		var neededPower = new Mana((Math.pow(11, powerFact) - 1) * baseExpansionPower, 0d, 0d, 0d);
 		if (network.canProduce(neededPower)) {
-			network.setLoadW(neededPower);
-			var expanded = entity.powerFact * entity.baseExpansion;
-			network.setCache(new Mana(expanded, expanded, expanded, expanded));
+			setLoadW(neededPower);
+			var expanded = powerFact * baseExpansion;
+			setCache(new Mana(expanded, expanded, expanded, expanded));
 		}
-		network.setCache(new Mana(entity.baseStorage, entity.baseStorage, entity.baseStorage, entity.baseStorage));
+		setCache(new Mana(baseStorage, baseStorage, baseStorage, baseStorage));
 
-		if (level.getBlockEntity(pos.above(entity.connectHeight)) instanceof NetNodeBlockEntity nodeBe) {
+		if (level.getBlockEntity(pos.above(connectHeight)) instanceof NetNodeBlockEntity nodeBe) {
 			nodeBe.connect(level, pos, Direction.UP, Direction.DOWN);
 		}
 
 		// 充能逻辑
-		var budget = entity.chargeRate * entity.maxChargePower / 20d;
+		var budget = chargeRate * maxChargePower / 20d;
 		var somethingChanged = false;
-		for (int i = 0; i < entity.chargeSlotCount; i++) {
-			var stack = entity.chargeContainer.getItem(i);
+		for (int i = 0; i < chargeSlotCount; i++) {
+			var stack = chargeContainer.getItem(i);
 			var stored = stack.get(ModDataComponents.MANA.get());
 			if (stored == null) continue;
 
@@ -98,7 +100,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 			var planToChargeR = Math.min(stored.capacity.getRadiation() - stored.current.getRadiation(), budget);
 			if (network.canProduce(new Mana(planToChargeR, 0d, 0d, 0d))) {
 				stored = new StoredMana(stored.current.add(new Mana(planToChargeR, 0d, 0d, 0d)), stored.capacity);
-				network.setLoadW(new Mana(planToChargeR * 20, 0d, 0d, 0d));
+				setLoadW(new Mana(planToChargeR * 20, 0d, 0d, 0d));
 				budget -= planToChargeR;
 				somethingChanged = true;
 			}
@@ -107,7 +109,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 			var planToChargeT = Math.min(stored.capacity.getTemperature() - stored.current.getTemperature(), budget);
 			if (network.canProduce(new Mana(0d, planToChargeT, 0d, 0d))) {
 				stored = new StoredMana(stored.current.add(new Mana(0d, planToChargeT, 0d, 0d)), stored.capacity);
-				network.setLoadW(new Mana(0d, planToChargeT * 20, 0d, 0d));
+				setLoadW(new Mana(0d, planToChargeT * 20, 0d, 0d));
 				budget -= planToChargeT;
 				somethingChanged = true;
 			}
@@ -116,7 +118,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 			var planToChargeM = Math.min(stored.capacity.getMomentum() - stored.current.getMomentum(), budget);
 			if (network.canProduce(new Mana(0d, 0d, planToChargeM, 0d))) {
 				stored = new StoredMana(stored.current.add(new Mana(0d, 0d, planToChargeM, 0d)), stored.capacity);
-				network.setLoadW(new Mana(0d, 0d, planToChargeM * 20, 0d));
+				setLoadW(new Mana(0d, 0d, planToChargeM * 20, 0d));
 				budget -= planToChargeM;
 				somethingChanged = true;
 			}
@@ -125,7 +127,7 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 			var planToChargeP = Math.min(stored.capacity.getPressure() - stored.current.getPressure(), budget);
 			if (network.canProduce(new Mana(0d, 0d, 0d, planToChargeP))) {
 				stored = new StoredMana(stored.current.add(new Mana(0d, 0d, 0d, planToChargeP)), stored.capacity);
-				network.setLoadW(new Mana(0d, 0d, 0d, planToChargeP * 20));
+				setLoadW(new Mana(0d, 0d, 0d, planToChargeP * 20));
 				budget -= planToChargeP;
 				somethingChanged = true;
 			}
@@ -133,6 +135,6 @@ public class ManaBufferBlockEntity extends MachineBlockEntity implements GeoBloc
 			stack.set(ModDataComponents.MANA.get(), stored);
 		}
 
-		if (somethingChanged) entity.chargeContainer.setChanged();
+		if (somethingChanged) chargeContainer.setChanged();
 	}
 }

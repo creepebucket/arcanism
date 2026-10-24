@@ -60,7 +60,7 @@ public class SteamTurbine extends BasicMachine {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModBlockEntities.STEAM_TURBINE_BLOCK_ENTITY.get()) {
-			return (lvl, pos, st, blockEntity) -> SteamTurbineBlockEntity.tick(lvl, pos, st, (SteamTurbineBlockEntity) blockEntity);
+			return (lvl, pos, st, blockEntity) -> ((SteamTurbineBlockEntity) blockEntity).tick(lvl, pos, st);
 		}
 		return null;
 	}

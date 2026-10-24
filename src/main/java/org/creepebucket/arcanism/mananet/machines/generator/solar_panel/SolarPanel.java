@@ -59,7 +59,7 @@ public class SolarPanel extends BasicMachine {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (type == ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get()) {
-            return (lvl, pos, st, blockEntity) -> SolarPanelBlockEntity.tick(lvl, pos, st, (SolarPanelBlockEntity) blockEntity);
+            return (lvl, pos, st, blockEntity) -> ((SolarPanelBlockEntity) blockEntity).tick(lvl, pos, st);
         }
         return null;
     }

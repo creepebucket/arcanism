@@ -73,23 +73,25 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		return geoCache;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, LiquidHeaterBlockEntity entity) {
+	@Override
+	public void tick(Level level, BlockPos pos, BlockState state) {
+		super.tick(level, pos, state);
 		if (level.isClientSide()) return;
 
 		// 连接到魔力网络
 		var facing = level.getBlockState(pos).getValue(BasicMachine.FACING).getOpposite();
 		var pending = pos.relative(facing).above();
 		if (level.getBlockEntity(pending) instanceof NetNodeBlockEntity) {
-			entity.connect(level, pending, Direction.DOWN, Direction.DOWN);
+			connect(level, pending, Direction.DOWN, Direction.DOWN);
 		}
 
-		var networkData = entity.getNetworkData();
-		networkData.setCache(new Mana(2000d, 2000d, 2000d, 2000d));
+		var networkData = getNetworkData();
+		setCache(new Mana(2000d, 2000d, 2000d, 2000d));
 
-		if (!entity.enabled) return;
+		if (!this.enabled) return;
 
 		// 获取输入输出端
-		var block = (BasicMachine) entity.getBlockState().getBlock();
+		var block = (BasicMachine) getBlockState().getBlock();
 		RelativeBlockPos fluidInputPos = null, fluidOutputPos = null, itemInputPos = null;
 		for (var entry : block.IO_DEFINITION.entrySet()) {
 			switch (entry.getValue()) {
@@ -98,46 +100,46 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 				case "item_input" -> itemInputPos = entry.getKey();
 			}
 		}
-		var fluidInput = fluidInputPos != null ? entity.fluidStorage.get(fluidInputPos) : null;
-		var fluidOutput = fluidOutputPos != null ? entity.fluidStorage.get(fluidOutputPos) : null;
-		var itemInput = itemInputPos != null ? entity.itemStorage.get(itemInputPos) : null;
+		var fluidInput = fluidInputPos != null ? this.fluidStorage.get(fluidInputPos) : null;
+		var fluidOutput = fluidOutputPos != null ? this.fluidStorage.get(fluidOutputPos) : null;
+		var itemInput = itemInputPos != null ? this.itemStorage.get(itemInputPos) : null;
 
 		// 查找匹配输入流体的配方
 		// 屎
 		var inputResource = fluidInput.getResource(0);
-		var inputId = entity.recipeProgress > 0 ? Identifier.parse(entity.inputId) : BuiltInRegistries.FLUID.getKey(inputResource.getFluid());
+		var inputId = this.recipeProgress > 0 ? Identifier.parse(this.inputId) : BuiltInRegistries.FLUID.getKey(inputResource.getFluid());
 		if (!(level instanceof ServerLevel serverLevel)) return;
 		var optional = serverLevel.recipeAccess().getRecipeFor(ModRecipeTypes.LIQUID_HEATER.get(), new LiquidHeaterRecipies.Input(inputId), level);
 		if (optional.isEmpty()) return;
 		var matchedRecipe = optional.get().value();
-		entity.conversionCost = matchedRecipe.conversionCost();
-		entity.inputId = matchedRecipe.inputFluid();
-		entity.outputId = matchedRecipe.outputFluid();
+		this.conversionCost = matchedRecipe.conversionCost();
+		this.inputId = matchedRecipe.inputFluid();
+		this.outputId = matchedRecipe.outputFluid();
 		var convertRatio = matchedRecipe.convertRatio();
-		inputResource = FluidResource.of(BuiltInRegistries.FLUID.getValue(Identifier.parse(entity.inputId)));
-		var outputResource = FluidResource.of(BuiltInRegistries.FLUID.getValue(Identifier.parse(entity.outputId)));
-		double energyCost = entity.conversionCost * 5 * (entity.powerFact + 1);
+		inputResource = FluidResource.of(BuiltInRegistries.FLUID.getValue(Identifier.parse(this.inputId)));
+		var outputResource = FluidResource.of(BuiltInRegistries.FLUID.getValue(Identifier.parse(this.outputId)));
+		double energyCost = this.conversionCost * 5 * (this.powerFact + 1);
 
 		// 从输入/输出侧获取本刻最高可处理数量
-		double maximumProcessCapacityFromInput = Math.max(0d, fluidInput.getAmountAsInt(0) - entity.recipeProgress);
-		double maximumProcessCapacityFromOutput = Math.max(0d, Math.floor((fluidOutput.getCapacityAsInt(0, outputResource) - fluidOutput.getAmountAsInt(0)) / convertRatio) - entity.recipeProgress);
+		double maximumProcessCapacityFromInput = Math.max(0d, fluidInput.getAmountAsInt(0) - this.recipeProgress);
+		double maximumProcessCapacityFromOutput = Math.max(0d, Math.floor((fluidOutput.getCapacityAsInt(0, outputResource) - fluidOutput.getAmountAsInt(0)) / convertRatio) - this.recipeProgress);
 
 		// 从机器功率侧获取本刻最高可处理数量
-		double maximumProcessCapacityFromMachine = entity.powerFact * 4e6 / 20 / entity.conversionCost;
+		double maximumProcessCapacityFromMachine = this.powerFact * 4e6 / 20 / this.conversionCost;
 		// 从能源侧获取本刻最高可处理数量
-		double maximumProcessCapacityFromEnergy = entity.fuelCurrentValue / energyCost;
+		double maximumProcessCapacityFromEnergy = this.fuelCurrentValue / energyCost;
 
 		// 计划消耗的燃料
 		int[] fuelAmounts = new int[itemInput.size()];
 		// 计划消耗的燃料热值
 		double addedFuelValue = 0;
 		// 当前燃料
-		String currentFuelId = entity.currentFuelId;
+		String currentFuelId = this.currentFuelId;
 
 		// 计算当前处理量
 		double maximumProcessCapacity = Math.min(maximumProcessCapacityFromMachine, Math.min(maximumProcessCapacityFromInput, maximumProcessCapacityFromOutput));
 
-		if (entity.inputMode) {
+		if (this.inputMode) {
 			// 魔力模式
 			maximumProcessCapacityFromEnergy = networkData.getNext().getTemperature() / energyCost;
 		} else {
@@ -153,11 +155,11 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 				double fuelValue = fuel.toStack().getBurnTime(RecipeType.SMELTING, level.fuelValues()) * ModConfig.CONFIG.fuelValueMultiplier.get();
 
 				// 预取燃料
-				fuelAmounts[i] = Math.min(itemInput.getAmountAsInt(i), (int) Math.ceil((maximumProcessCapacity * energyCost - entity.fuelCurrentValue - addedFuelValue) / fuelValue));
+				fuelAmounts[i] = Math.min(itemInput.getAmountAsInt(i), (int) Math.ceil((maximumProcessCapacity * energyCost - this.fuelCurrentValue - addedFuelValue) / fuelValue));
 				addedFuelValue += fuelAmounts[i] * fuelValue;
 
 				// 更新最大处理量
-				maximumProcessCapacityFromEnergy = (entity.fuelCurrentValue + addedFuelValue) / energyCost;
+				maximumProcessCapacityFromEnergy = (this.fuelCurrentValue + addedFuelValue) / energyCost;
 				// 更新当前燃料
 				currentFuelId = BuiltInRegistries.ITEM.getKey(fuel.getItem()).toString();
 			}
@@ -167,15 +169,15 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		maximumProcessCapacity = Math.min(maximumProcessCapacityFromEnergy, maximumProcessCapacity);
 
 		// 根据本刻处理量计算每分钟处理量
-		entity.inputSpeed = maximumProcessCapacity * 1200;
-		entity.outputSpeed = entity.inputSpeed * convertRatio;
+		this.inputSpeed = maximumProcessCapacity * 1200;
+		this.outputSpeed = this.inputSpeed * convertRatio;
 
 		// 执行前检测
 		if (maximumProcessCapacity <= 0) return;
 
 		// 执行逻辑
 		// 计算待输入/输出的流体 (并舍入)
-		int fluidToProcess = (int) Math.floor(entity.recipeProgress + maximumProcessCapacity);
+		int fluidToProcess = (int) Math.floor(this.recipeProgress + maximumProcessCapacity);
 		int fluidToProduce = (int) Math.floor(fluidToProcess * convertRatio);
 
 		// 预期功率计算
@@ -200,16 +202,16 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		}
 
 		// 根据实际存取的流体计算剩余流体
-		entity.recipeProgress += maximumProcessCapacity - fluidToProcess;
+		this.recipeProgress += maximumProcessCapacity - fluidToProcess;
 
 		// 如果是魔力模式 就扣魔力
-		if (entity.inputMode) networkData.setLoadW(new Mana(0d, energyConsumption * 20, 0d, 0d));
+		if (this.inputMode) setLoadW(new Mana(0d, energyConsumption * 20, 0d, 0d));
 		else {
 			// 如果是燃料模式 计算燃料信息
-			entity.fuelTotalValue = addedFuelValue > 0 ? addedFuelValue : entity.fuelTotalValue;
-			entity.fuelCurrentValue += addedFuelValue - energyConsumption;
-			entity.currentFuelId = currentFuelId;
+			this.fuelTotalValue = addedFuelValue > 0 ? addedFuelValue : this.fuelTotalValue;
+			this.fuelCurrentValue += addedFuelValue - energyConsumption;
+			this.currentFuelId = currentFuelId;
 		}
-		entity.setChanged();
+		setChanged();
 	}
 }

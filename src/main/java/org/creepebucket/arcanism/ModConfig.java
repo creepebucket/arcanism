@@ -16,6 +16,7 @@ public class ModConfig {
 	public final ModConfigSpec.BooleanValue clientSideInterpolation;
 	public final ModConfigSpec.IntValue clientInterpolationWindow;
 	public final ModConfigSpec.IntValue serverDataSyncInterval;
+	public final ModConfigSpec.EnumValue<ManaNetSplitMode> manaNetSplitMode;
 
 	static {
 		Pair<ModConfig, ModConfigSpec> pair = new ModConfigSpec.Builder()
@@ -92,6 +93,14 @@ public class ModConfig {
 				.translation("arcanism.config.global_cast_cost_mult")
 				.defineInRange("global_cast_cost_mult", 1.0, 0.0, Double.MAX_VALUE);
 
+		manaNetSplitMode = builder.comment("魔力网络因拓扑改变而分割时, 网络中已有魔力的分配方式",
+						"half: 两半平分",
+						"node_ratio: 按两半的节点数量比例分配",
+						"ratio: 按两半的缓冲容量比例分配",
+						"largest: 全部分给节点数量较多的一半")
+				.translation("arcanism.config.mana_net_split_mode")
+				.defineEnum("mana_net_split_mode", ManaNetSplitMode.RATIO);
+
 		builder.pop();
 
 		builder.push("visual");
@@ -120,5 +129,12 @@ public class ModConfig {
 				.defineInRange("server_data_sync_interval", 15, 1, Integer.MAX_VALUE);
 
 		builder.pop();
+	}
+
+	public enum ManaNetSplitMode {
+		HALF,
+		NODE_RATIO,
+		RATIO,
+		LARGEST
 	}
 }

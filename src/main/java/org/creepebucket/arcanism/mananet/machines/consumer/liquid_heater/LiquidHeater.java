@@ -62,7 +62,7 @@ public class LiquidHeater extends BasicMachine {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModBlockEntities.LIQUID_HEATER_BLOCK_ENTITY.get()) {
-			return (lvl, pos, st, blockEntity) -> LiquidHeaterBlockEntity.tick(lvl, pos, st, (LiquidHeaterBlockEntity) blockEntity);
+			return (lvl, pos, st, blockEntity) -> ((LiquidHeaterBlockEntity) blockEntity).tick(lvl, pos, st);
 		}
 		return null;
 	}
