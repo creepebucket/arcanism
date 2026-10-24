@@ -32,6 +32,7 @@ public class NetNodeBlockEntity extends BlockEntity {
     }
 
     public void connect(Level level, BlockPos connectedPos, Direction connectedFace, Direction selfFace) {
+        if (connectedPos.equals(getData(ModAttachments.CONNECTIONS).get(selfFace))) return;
         var connected = level.getBlockEntity(connectedPos);
         if (connected == null) return;
 
