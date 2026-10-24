@@ -34,6 +34,7 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
         super(type, containerId);
         this.hand = hand;
         this.playerInv = playerInv;
+        this.dataManager.clientSide = playerInv.player.level().isClientSide();
         this.hooks.bindMenuPlayer(playerInv.player);
 
         // 服务端发包逻辑

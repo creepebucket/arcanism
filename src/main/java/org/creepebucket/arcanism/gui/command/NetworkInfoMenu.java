@@ -3,6 +3,7 @@ package org.creepebucket.arcanism.gui.command;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
+import org.creepebucket.arcanism.ModConfig;
 import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
 import org.creepebucket.arcanism.gui.lib.api.SyncMode;
 import org.creepebucket.arcanism.gui.lib.ui.Menu;
@@ -27,7 +28,7 @@ public class NetworkInfoMenu extends Menu {
 
 	@Override
 	public void init() {
-		updateInterval = registerData("update_interval", SyncMode.BOTH, 15d);
+		updateInterval = registerData("update_interval", SyncMode.BOTH, (double) ModConfig.CONFIG.serverDataSyncInterval.get());
 		datas = registerData("mana_data", SyncMode.BOTH, NetworkManaManager.getAllData(playerInv.player.level()));
 	}
 

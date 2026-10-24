@@ -13,6 +13,9 @@ public class ModConfig {
 	public final ModConfigSpec.DoubleValue castMass;
 	public final ModConfigSpec.DoubleValue breakEnergyPerHardness;
 	public final ModConfigSpec.DoubleValue globalCastCostMult;
+	public final ModConfigSpec.BooleanValue clientSideInterpolation;
+	public final ModConfigSpec.IntValue clientInterpolationWindow;
+	public final ModConfigSpec.IntValue serverDataSyncInterval;
 
 	static {
 		Pair<ModConfig, ModConfigSpec> pair = new ModConfigSpec.Builder()
@@ -96,6 +99,25 @@ public class ModConfig {
 		disableAnimations = builder.comment("禁用动画")
 				.translation("arcanism.config.disable_animations")
 				.define("disable_animations", false);
+
+		builder.pop();
+
+		builder.push("network");
+
+		clientSideInterpolation = builder.comment("启用服务端数据的客户端插值",
+						"启用插值后不会改变服务端的数据回传时间, 只是以数据延迟为代价平滑数据值")
+				.translation("arcanism.config.client_side_interpolation")
+				.define("client_side_interpolation", false);
+
+		clientInterpolationWindow = builder.comment("客户端插值时间窗口",
+						"在多长的时间范围内平滑服务端数据(刻)")
+				.translation("arcanism.config.client_interpolation_window")
+				.defineInRange("client_interpolation_window", 15, 1, Integer.MAX_VALUE);
+
+		serverDataSyncInterval = builder.comment("服务端数据回传间隔",
+						"改变服务端多数数据(机器魔力/工作进度等)的同步间隔(刻). 可能会对网络有一定影响")
+				.translation("arcanism.config.server_data_sync_interval")
+				.defineInRange("server_data_sync_interval", 15, 1, Integer.MAX_VALUE);
 
 		builder.pop();
 	}

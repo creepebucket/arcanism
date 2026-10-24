@@ -654,8 +654,15 @@
   "arcanism.config.break_energy_per_hardness.tooltip": "每点方块硬度对应的破坏魔力消耗(J)",
   "arcanism.config.global_cast_cost_mult": "全局施法消耗乘数",
   "arcanism.config.global_cast_cost_mult.tooltip": "所有法术魔力消耗的全局乘数",
+  "arcanism.config.client_side_interpolation": "客户端插值",
+  "arcanism.config.client_side_interpolation.tooltip": "启用服务端数据的客户端插值。启用插值后不会改变服务端的数据回传时间, 只是以数据延迟为代价平滑数据值",
+  "arcanism.config.client_interpolation_window": "插值时间窗口",
+  "arcanism.config.client_interpolation_window.tooltip": "在多长的时间范围内平滑服务端数据(刻)",
+  "arcanism.config.server_data_sync_interval": "数据回传间隔",
+  "arcanism.config.server_data_sync_interval.tooltip": "改变服务端多数数据(机器魔力/工作进度等)的同步间隔(刻). 可能会对网络有一定影响",
   "arcanism.configuration.gameplay": "玩法",
   "arcanism.configuration.visual": "视觉效果",
+  "arcanism.configuration.network": "网络",
   "arcanism.configuration.section.arcanism.common.toml": "魔导主义·通用配置",
   "arcanism.configuration.section.arcanism.common.toml.title": "魔导主义·通用配置"
 }

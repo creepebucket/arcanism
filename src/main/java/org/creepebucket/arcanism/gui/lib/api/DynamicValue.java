@@ -14,7 +14,7 @@ public class DynamicValue<T> {
 
     @SuppressWarnings("unchecked")
     public T get() {
-        return (T) manager.values.get(key);
+        return (T) manager.get(key);
     }
 
     public void set(T value) {

@@ -5,6 +5,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import org.creepebucket.arcanism.ModConfig;
 import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
 import org.creepebucket.arcanism.gui.lib.api.SyncMode;
 import org.creepebucket.arcanism.gui.lib.ui.Menu;
@@ -31,7 +32,7 @@ public abstract class MachineMenu extends Menu {
 
 	protected void setBlockPos(BlockPos pos) {
 		this.pos = pos;
-		this.count = 15;
+		this.count = ModConfig.CONFIG.serverDataSyncInterval.get();
 	}
 
 	protected void initNetworkData() {
@@ -76,7 +77,7 @@ public abstract class MachineMenu extends Menu {
 	public void tick() {
 		if (playerInv.player.level().isClientSide()) return;
 		if (pos == null) return;
-		if (count == 15) {
+		if (count >= ModConfig.CONFIG.serverDataSyncInterval.get()) {
 			count = 0;
 			var blockEntity = (NetNodeBlockEntity) playerInv.player.level().getBlockEntity(pos);
 			syncManaData(blockEntity);

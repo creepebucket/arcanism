@@ -654,8 +654,15 @@
   "arcanism.config.break_energy_per_hardness.tooltip": "Mana cost (J) per point of block hardness",
   "arcanism.config.global_cast_cost_mult": "Global Cast Cost Multiplier",
   "arcanism.config.global_cast_cost_mult.tooltip": "Global multiplier applied to all spell mana costs",
+  "arcanism.config.client_side_interpolation": "Client-side Interpolation",
+  "arcanism.config.client_side_interpolation.tooltip": "Interpolate server data on the client. Enabling this does not change the server's sync timing, it only smooths values at the cost of latency",
+  "arcanism.config.client_interpolation_window": "Interpolation Time Window",
+  "arcanism.config.client_interpolation_window.tooltip": "Time range (ticks) over which server data is smoothed",
+  "arcanism.config.server_data_sync_interval": "Server Data Sync Interval",
+  "arcanism.config.server_data_sync_interval.tooltip": "Sync interval (ticks) for most server data (machine mana/work progress, etc). May affect network traffic",
   "arcanism.configuration.gameplay": "Gameplay",
   "arcanism.configuration.visual": "Visual",
+  "arcanism.configuration.network": "Network",
   "arcanism.configuration.section.arcanism.common.toml": "Arcanism Common",
   "arcanism.configuration.section.arcanism.common.toml.title": "Arcanism Common"
 }

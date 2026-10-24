@@ -18,6 +18,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import org.creepebucket.arcanism.ModConfig;
 import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
 import org.creepebucket.arcanism.gui.lib.api.SyncMode;
 import org.creepebucket.arcanism.gui.machines.api.MachineMenu;
@@ -49,7 +50,7 @@ public class IoDummyMenu extends MachineMenu {
 			menu.resourceHandler = resourceHandler;
 			menu.canInput = canInput;
 			menu.canOutput = canOutput;
-			menu.count = 15;
+			menu.count = ModConfig.CONFIG.serverDataSyncInterval.get();
 			menu.init();
 		});
 		if (resourceHandler.getResource(0) instanceof ItemResource) {
@@ -82,7 +83,7 @@ public class IoDummyMenu extends MachineMenu {
 	@Override
 	public void tick() {
 		if (playerInv.player.level().isClientSide()) return;
-		if (count == 15) {
+		if (count >= ModConfig.CONFIG.serverDataSyncInterval.get()) {
 			count = 0;
 			onNetworkSynced();
 			if (resourceHandler.getResource(0) instanceof FluidResource)
