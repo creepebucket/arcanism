@@ -69,9 +69,17 @@ public class MultilineTextWidget extends TextWidget implements Lifecycle {
         lines = new ArrayList<>();
         FormattedText remaining = text;
         while (!remaining.getString().isEmpty()) {
-            FormattedText head = font.substrByWidth(remaining, maxWidth);
-            lines.add(Language.getInstance().getVisualOrder(head));
-            remaining = tail(remaining, head.getString().length());
+            String plain = remaining.getString();
+            int fit = Math.max(1, font.substrByWidth(remaining, maxWidth).getString().length());
+            int cut = fit;
+            // 英文单词不从中间断开: 断点两侧都是英文词字符时继续前移
+            while (cut < plain.length() && cut > 0 && plain.charAt(cut - 1) < 0x2E80 && Character.isLetterOrDigit(plain.charAt(cut - 1))
+                    && plain.charAt(cut) < 0x2E80 && Character.isLetterOrDigit(plain.charAt(cut))) cut--;
+            if (cut == 0) cut = fit;
+            // 全角收尾标点不落到下一行行首: 把标点吞回当前行
+            while (cut < plain.length() && "，。、；：！？）》」』】”’…～·".indexOf(plain.charAt(cut)) >= 0) cut++;
+            lines.add(Language.getInstance().getVisualOrder(slice(remaining, 0, cut)));
+            remaining = slice(remaining, cut, plain.length() - cut);
         }
         int textHeight = (int) (lines.size() * lineHeight * scale);
         if (textHeight > originalSize.y.apply(refWidth, refHeight))
@@ -79,16 +87,21 @@ public class MultilineTextWidget extends TextWidget implements Lifecycle {
     }
 
     /**
-     * 在字符边界去掉文本头部 skip 个字符，保留剩余部分及其样式。
+     * 在字符边界截取文本, 保留原样式。
+     *
+     * @param text  源文本
+     * @param skip  跳过的开头字符数
+     * @param count 保留的字符数, 超出剩余长度时保留全部
      */
-    public FormattedText tail(FormattedText text, int skip) {
-        int[] remaining = {skip};
+    public FormattedText slice(FormattedText text, int skip, int count) {
+        int[] range = {skip, count};
         List<FormattedText> kept = new ArrayList<>();
         text.visit((style, content) -> {
-            int from = Math.min(remaining[0], content.length());
-            remaining[0] -= from;
-            if (from < content.length())
-                kept.add(FormattedText.of(content.substring(from), style));
+            int from = Math.min(range[0], content.length());
+            range[0] -= from;
+            int take = Math.min(range[1], content.length() - from);
+            range[1] -= take;
+            if (take > 0) kept.add(FormattedText.of(content.substring(from, from + take), style));
             return Optional.empty();
         }, Style.EMPTY);
         return FormattedText.composite(kept);

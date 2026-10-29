@@ -4,11 +4,11 @@ import org.creepebucket.arcanism.gui.help.HelpWindowWidgets;
 
 public class UnimplementedWidget extends HelpWindowWidgets.HelpBodyWidget {
     public UnimplementedWidget() {
-        super("404 Not Found");
+        super("gui.arcanism.help.page.unimplemented.title");
     }
 
     @Override
     public void buildContent() {
-        addWarning("目前暂未实现该页面", "正在写, 真的qwq...");
+        addWarning("gui.arcanism.help.page.unimplemented.warning", "gui.arcanism.help.page.unimplemented.warning_text");
     }
 }

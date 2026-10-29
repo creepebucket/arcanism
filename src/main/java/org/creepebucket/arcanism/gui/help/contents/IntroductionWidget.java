@@ -12,32 +12,32 @@ import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
 
 public class IntroductionWidget extends HelpWindowWidgets.HelpBodyWidget {
     public IntroductionWidget() {
-        super("欢迎");
+        super("gui.arcanism.help.page.welcome.title");
     }
 
     @Override
     public void buildContent() {
-        addParagraph("欢迎来到《魔导主义》的帮助菜单。左侧是目录, 右侧是页面内容。本页介绍这个界面本身的用法。");
+        addParagraph("gui.arcanism.help.page.welcome.intro");
 
-        addHeading("textures/gui/icons/directory.png", "目录导航");
-        addEntry("textures/gui/icons/small_arrow_right.png", "折叠的条目", "点击展开, 显示它包含的子页面。");
-        addEntry("textures/gui/icons/small_arrow_down.png", "展开的条目", "再次点击即可收起, 回到紧凑的列表。");
-        addEntry("textures/gui/icons/small_arrow_in.png", "叶子条目", "点击后在右侧打开对应页面; 当前页面的名字在目录中加粗显示。");
+        addHeading("textures/gui/icons/directory.png", "gui.arcanism.help.page.welcome.heading.directory");
+        addEntry("textures/gui/icons/small_arrow_right.png", "gui.arcanism.help.page.welcome.entry.expand.label", "gui.arcanism.help.page.welcome.entry.expand.note");
+        addEntry("textures/gui/icons/small_arrow_down.png", "gui.arcanism.help.page.welcome.entry.collapse.label", "gui.arcanism.help.page.welcome.entry.collapse.note");
+        addEntry("textures/gui/icons/small_arrow_in.png", "gui.arcanism.help.page.welcome.entry.leaf.label", "gui.arcanism.help.page.welcome.entry.leaf.note");
 
-        addHeading("textures/gui/icons/description.png", "阅读页面");
-        addEntry("textures/gui/icons/small_arrow_up.png", "滚轮向上", "页面向顶部滚动; 鼠标悬停在左侧目录上时, 滚动的是目录。");
-        addEntry("textures/gui/icons/small_arrow_down.png", "滚轮向下", "页面向底部滚动, 每次滚动一格。");
+        addHeading("textures/gui/icons/description.png", "gui.arcanism.help.page.welcome.heading.reading");
+        addEntry("textures/gui/icons/small_arrow_up.png", "gui.arcanism.help.page.welcome.entry.scroll_up.label", "gui.arcanism.help.page.welcome.entry.scroll_up.note");
+        addEntry("textures/gui/icons/small_arrow_down.png", "gui.arcanism.help.page.welcome.entry.scroll_down.label", "gui.arcanism.help.page.welcome.entry.scroll_down.note");
 
         var scrollbarRow = new Widget.BlankWidget(fromTopLeft(0, 0), fromTopRight(0, 12));
         scrollbarRow.addChild(new RectangleWidget(fromTopLeft(10, 2), fromTopLeft(4, 10)).mainColor(0x33ffffff));
         scrollbarRow.addChild(new RectangleWidget(fromTopLeft(10, 2), fromTopLeft(4, 4)).mainColor(ModColors.MAIN_COLOR_M));
-        scrollbarRow.addChild(new TextWidget(fromTopLeft(22, 1), Component.literal("右侧滚动条")).noShadow().mainColor(0xffe8feff));
+        scrollbarRow.addChild(new TextWidget(fromTopLeft(22, 1), Component.translatable("gui.arcanism.help.page.welcome.scrollbar.label")).noShadow().mainColor(0xffe8feff));
         acceptSegment(scrollbarRow);
-        acceptSegment(new MultilineTextWidget(fromTopLeft(22, 0), fromTopRight(-30, 0), Component.literal("按住滑块上下拖动, 可以直接跳到页面的任意位置。页面放得下时, 滚动条会自动隐藏。")).lineHeight(11).noShadow().mainColor(0xff9a9a9a));
+        acceptSegment(new MultilineTextWidget(fromTopLeft(22, 0), fromTopRight(-30, 0), Component.translatable("gui.arcanism.help.page.welcome.scrollbar.note")).lineHeight(11).noShadow().mainColor(0xff9a9a9a));
 
-        addHeading("textures/gui/icons/nametag.png", "窗口与退出");
-        addParagraph("调整游戏窗口大小后, 界面会自动重新排版, 不需要重新打开。");
+        addHeading("textures/gui/icons/nametag.png", "gui.arcanism.help.page.welcome.heading.window");
+        addParagraph("gui.arcanism.help.page.welcome.window.resize");
 
-        addNote("关闭菜单", "按 ESC 随时关闭帮助菜单。");
+        addNote("gui.arcanism.help.page.welcome.note.close.title", "gui.arcanism.help.page.welcome.note.close.text");
     }
 }
