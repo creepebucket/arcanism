@@ -88,6 +88,13 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         updateContext(width, height, this.leftPos, this.topPos);
         ClientUiContext.setFont(this.font);
         this.menu.reportScreenSize(width, height);
+
+        // 清掉旧尺寸缓存后再通知控件重排，保证 onResize 里读到的是新尺寸
+        var widgets = List.copyOf(this.root.allChild());
+        for (Widget widget : widgets) widget.clearCache();
+        for (Widget widget : widgets) {
+            if (widget instanceof Lifecycle lifecycle) lifecycle.onResize(width, height);
+        }
     }
 
     @Override
@@ -130,7 +137,7 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
             }
             // widget自己的简易tooltip
 
-            if (widget.doShowTooltip && widget.isInBounds(mouseX, mouseY) && widget.enabled)
+            if (widget.doShowTooltip && widget.isInBounds(mouseX, mouseY) && widget.isEffectivelyEnabled())
                 graphics.setTooltipForNextFrame(ClientUiContext.getFont(), List.of(widget.tooltip.getVisualOrderText()), mouseX, mouseY);
         }
     }
@@ -151,13 +158,15 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
         super.mouseClicked(event, fromMouse);
         for (Widget widget : this.root.allChild()) {
+            if (!widget.isEffectivelyEnabled()) continue;
+
             if (widget instanceof Clickable clickable) {
                 if (clickable.mouseClicked(event, fromMouse)) return true;
 
                 if (widget.isInBounds(event.x(), event.y()) && clickable.mouseClickedChecked(event, fromMouse))
                     return true;
             }
-            if (!widget.clickBehaviors.isEmpty() && widget.enabled && widget.isInBounds(event.x(), event.y())) {
+            if (!widget.clickBehaviors.isEmpty() && widget.isInBounds(event.x(), event.y())) {
                 for (Runnable behavior : widget.clickBehaviors) behavior.run();
                 return true;
             }
@@ -169,6 +178,8 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public boolean mouseReleased(MouseButtonEvent event) {
         super.mouseReleased(event);
         for (Widget widget : this.root.allChild()) {
+            if (!widget.isEffectivelyEnabled()) continue;
+
             if (widget instanceof Clickable clickable) {
                 if (clickable.mouseReleased(event)) return true;
 
@@ -182,6 +193,8 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         super.mouseDragged(event, dragX, dragY);
         for (Widget widget : this.root.allChild()) {
+            if (!widget.isEffectivelyEnabled()) continue;
+
             if (widget instanceof MouseDraggable draggable) {
                 if (draggable.mouseDragged(event, dragX, dragY)) return true;
             }
@@ -193,6 +206,8 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         for (Widget widget : this.root.allChild()) {
+            if (!widget.isEffectivelyEnabled()) continue;
+
             if (widget instanceof MouseScrollable scrollable) {
                 if (scrollable.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
             }
@@ -204,6 +219,8 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public boolean keyPressed(KeyEvent event) {
         super.keyPressed(event);
         for (Widget widget : this.root.allChild()) {
+            if (!widget.isEffectivelyEnabled()) continue;
+
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.keyPressed(event)) return true;
             }
@@ -215,6 +232,8 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public boolean keyReleased(KeyEvent event) {
         super.keyReleased(event);
         for (Widget widget : this.root.allChild()) {
+            if (!widget.isEffectivelyEnabled()) continue;
+
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.keyReleased(event)) return true;
             }
@@ -226,6 +245,8 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public boolean charTyped(CharacterEvent event) {
         super.charTyped(event);
         for (Widget widget : this.root.allChild()) {
+            if (!widget.isEffectivelyEnabled()) continue;
+
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.charTyped(event)) return true;
             }

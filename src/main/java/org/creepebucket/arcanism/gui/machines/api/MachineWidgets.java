@@ -161,13 +161,15 @@ public class MachineWidgets {
 		    else if (enabled && isInBounds(event.x(), event.y())) {
                 // 只在子组件分发事件, 阻断传播
 				for (Widget widget : allChild()) {
+                    if (!widget.isEffectivelyEnabled()) continue;
+
                     if (widget instanceof Clickable clickable) {
                         if (clickable.mouseClicked(event, fromMouse)) return true;
 
                         if (widget.isInBounds(event.x(), event.y()) && clickable.mouseClickedChecked(event, fromMouse))
                             return true;
                     }
-                    if (!widget.clickBehaviors.isEmpty() && widget.enabled && widget.isInBounds(event.x(), event.y())) {
+                    if (!widget.clickBehaviors.isEmpty() && widget.isInBounds(event.x(), event.y())) {
                         for (Runnable behavior : widget.clickBehaviors) behavior.run();
                         return true;
                     }

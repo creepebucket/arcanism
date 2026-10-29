@@ -16,6 +16,7 @@ public class ArcanismCommand {
 	public static final List<CommandHandler> HANDLERS = new ArrayList<>();
 
 	static {
+		registerHandler(new CommandHandler.HelpHandler());
 		registerHandler(new CommandHandler.ManaNetworkInfoHandler());
 		registerHandler(new CommandHandler.ManaNetworkSetHandler());
 		registerHandler(new CommandHandler.SpellHandler());
@@ -28,9 +29,11 @@ public class ArcanismCommand {
 
 	@SubscribeEvent
 	public static void onRegisterCommands(RegisterCommandsEvent event) {
-		var root = literal("arcanism").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
+		var root = literal("arcanism");
 		for (var handler : HANDLERS) {
-			root.then(handler.build());
+			root.then(handler.requiresPermission
+				? handler.build().requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+				: handler.build());
 		}
 		event.getDispatcher().register(root);
 	}

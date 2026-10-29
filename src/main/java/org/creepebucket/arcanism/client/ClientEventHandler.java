@@ -10,6 +10,7 @@ import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.resources.model.sprite.Material;
 import org.creepebucket.arcanism.gui.command.NetworkInfoScreen;
+import org.creepebucket.arcanism.gui.help.HelpScreen;
 import org.creepebucket.arcanism.gui.machines.buffer.ManaBufferScreen;
 import org.creepebucket.arcanism.gui.machines.consumer.liquid_heater.LiquidHeaterScreen;
 import org.creepebucket.arcanism.gui.machines.consumer.water_pump.WaterPumpScreen;
@@ -74,6 +75,10 @@ public class ClientEventHandler {
 		event.register(
 				ModMenuTypes.NETWORK_INFO.get(),
 				NetworkInfoScreen::new
+		);
+		event.register(
+				ModMenuTypes.HELP_MENU.get(),
+				HelpScreen::new
 		);
 		event.register(
 				ModMenuTypes.IO_DUMMY.get(),

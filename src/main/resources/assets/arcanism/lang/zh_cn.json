@@ -14,6 +14,7 @@
   "block.arcanism.vertical_mana_connector": "垂直魔力连接器",
   "block.arcanism.mana_generator": "魔力发生器",
   "entity.arcanism.spell_entity": "法术",
+  "gui.arcanism.help.title": "帮助",
   "gui.arcanism.wand.inventory": "背包",
   "gui.arcanism.wand.inventory.debugger_pause": "暂停",
   "gui.arcanism.wand.inventory.debugger_resume": "继续",

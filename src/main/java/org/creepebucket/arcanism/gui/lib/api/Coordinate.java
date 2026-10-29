@@ -11,6 +11,8 @@ import java.util.function.BiFunction;
 public class Coordinate {
 
     public static Coordinate ZERO = Coordinate.fromTopLeft(0, 0);
+    public static Coordinate CENTER = Coordinate.fromCenter(0, 0);
+    public static Coordinate FULL = Coordinate.fromBottomRight(0, 0);
     private static int screenWidth;
     private static int screenHeight;
     private static int guiLeft;

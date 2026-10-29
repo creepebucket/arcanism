@@ -26,6 +26,7 @@
   "block.arcanism.large_mana_buffer": "Large Mana Buffer",
   "block.arcanism.basic_mana_connector": "Basic Mana Connector",
   "entity.arcanism.spell_entity": "Spell Entity",
+  "gui.arcanism.help.title": "Help",
   "gui.arcanism.wand.inventory": "Inventory",
   "gui.arcanism.wand.inventory.debugger_pause": "Pause",
   "gui.arcanism.wand.inventory.debugger_resume": "Resume",

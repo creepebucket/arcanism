@@ -296,4 +296,8 @@ public class ModUtils {
     public static double roundDouble(double value) {
         return Math.round(value * 1e10) / 1e10;
     }
+
+    public static class RecursiveMap<K> extends LinkedHashMap<K, RecursiveMap<K>> {
+
+    }
 }

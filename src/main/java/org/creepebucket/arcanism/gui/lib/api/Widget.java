@@ -89,13 +89,17 @@ public abstract class Widget {
         return this;
     }
 
-    public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
+    public void clearCache() {
         childrenCache = null;
         xCache = null; yCache = null; wCache = null; hCache = null;
         menuXCache = null; menuYCache = null;
         originalXCache = null; originalYCache = null; originalWCache = null; originalHCache = null;
         mainColorIntCache = null; bgColorIntCache = null; textColorIntCache = null;
         screenWCache = null; screenHCache = null;
+    }
+
+    public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
+        clearCache();
 
         if (isForeground == renderInForeground) {
 
@@ -128,6 +132,15 @@ public abstract class Widget {
         if (enabled) for (Widget child : List.copyOf(children)) child.renderWidget(graphics, mx, my, partialTick, dt, isForeground);
     }
 
+    /**
+     * 自身及所有祖先都启用时才算可用，禁用组件的整棵子树都不接收输入事件。
+     */
+    public boolean isEffectivelyEnabled() {
+        for (Widget widget = this; widget != null; widget = widget.parent)
+            if (!widget.enabled) return false;
+        return true;
+    }
+
     public Widget enable() {
         enabled = true;
         return this;
@@ -149,6 +162,15 @@ public abstract class Widget {
      */
     public Widget addChild(Widget widget) {
         children.add(widget);
+        widget.parent = this;
+        widget.screen = screen;
+        for (Widget w : widget.allChild()) w.screen = screen;
+        if (widget instanceof Lifecycle lifecycle) lifecycle.onInitialize();
+        return widget;
+    }
+
+    public Widget addChildFirst(Widget widget) {
+        children.addFirst(widget);
         widget.parent = this;
         widget.screen = screen;
         for (Widget w : widget.allChild()) w.screen = screen;

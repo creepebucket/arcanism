@@ -131,7 +131,7 @@ public abstract class Animation {
         @Override
         public void onExpire(Widget widget) {
             if (doDelete) widget.removeMyself();
-            widget.disable();
+            else widget.disable();
         }
 
         public FadeOut noDeletion() {

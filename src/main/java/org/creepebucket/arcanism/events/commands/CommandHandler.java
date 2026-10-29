@@ -20,6 +20,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.level.storage.TagValueInput;
 import org.creepebucket.arcanism.entities.SpellEntity;
 import org.creepebucket.arcanism.gui.command.NetworkInfoMenu;
+import org.creepebucket.arcanism.gui.help.HelpMenu;
 import org.creepebucket.arcanism.mananet.NetNodeBlockEntity;
 import org.creepebucket.arcanism.mananet.NetworkManaManager;
 import org.creepebucket.arcanism.registries.ModAttachments;
@@ -38,6 +39,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public abstract class CommandHandler {
 	public final String subCommand;
+	public boolean requiresPermission = true;
 
 	public CommandHandler(String subCommand) {
 		this.subCommand = subCommand;
@@ -69,6 +71,23 @@ public abstract class CommandHandler {
 			ServerPlayer player = ctx.getSource().getPlayerOrException();
 			player.openMenu(
 				new SimpleMenuProvider((containerId, inventory, extra) -> new NetworkInfoMenu(containerId, inventory), Component.literal("Mana Network")),
+				buf -> {}
+			);
+		}
+	}
+
+	public static class HelpHandler extends CommandHandler {
+
+		public HelpHandler() {
+			super("help");
+			requiresPermission = false;
+		}
+
+		@Override
+		public void handle(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+			ServerPlayer player = ctx.getSource().getPlayerOrException();
+			player.openMenu(
+				new SimpleMenuProvider((containerId, inventory, extra) -> new HelpMenu(containerId, inventory), Component.translatable("gui.arcanism.help.title")),
 				buf -> {}
 			);
 		}
