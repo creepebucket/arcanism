@@ -17,16 +17,16 @@ public class IntroductionWidget extends HelpWindowWidgets.HelpBodyWidget {
 
     @Override
     public void buildContent() {
-        addParagraph("gui.arcanism.help.page.welcome.intro");
+        addParagraph(Component.translatable("gui.arcanism.help.page.welcome.intro"));
 
-        addHeading("textures/gui/icons/directory.png", "gui.arcanism.help.page.welcome.heading.directory");
-        addEntry("textures/gui/icons/small_arrow_right.png", "gui.arcanism.help.page.welcome.entry.expand.label", "gui.arcanism.help.page.welcome.entry.expand.note");
-        addEntry("textures/gui/icons/small_arrow_down.png", "gui.arcanism.help.page.welcome.entry.collapse.label", "gui.arcanism.help.page.welcome.entry.collapse.note");
-        addEntry("textures/gui/icons/small_arrow_in.png", "gui.arcanism.help.page.welcome.entry.leaf.label", "gui.arcanism.help.page.welcome.entry.leaf.note");
+        addHeading("textures/gui/icons/directory.png", Component.translatable("gui.arcanism.help.page.welcome.heading.directory"));
+        addEntry("textures/gui/icons/small_arrow_right.png", Component.translatable("gui.arcanism.help.page.welcome.entry.expand.label"), Component.translatable("gui.arcanism.help.page.welcome.entry.expand.note"));
+        addEntry("textures/gui/icons/small_arrow_down.png", Component.translatable("gui.arcanism.help.page.welcome.entry.collapse.label"), Component.translatable("gui.arcanism.help.page.welcome.entry.collapse.note"));
+        addEntry("textures/gui/icons/small_arrow_in.png", Component.translatable("gui.arcanism.help.page.welcome.entry.leaf.label"), Component.translatable("gui.arcanism.help.page.welcome.entry.leaf.note"));
 
-        addHeading("textures/gui/icons/description.png", "gui.arcanism.help.page.welcome.heading.reading");
-        addEntry("textures/gui/icons/small_arrow_up.png", "gui.arcanism.help.page.welcome.entry.scroll_up.label", "gui.arcanism.help.page.welcome.entry.scroll_up.note");
-        addEntry("textures/gui/icons/small_arrow_down.png", "gui.arcanism.help.page.welcome.entry.scroll_down.label", "gui.arcanism.help.page.welcome.entry.scroll_down.note");
+        addHeading("textures/gui/icons/description.png", Component.translatable("gui.arcanism.help.page.welcome.heading.reading"));
+        addEntry("textures/gui/icons/small_arrow_up.png", Component.translatable("gui.arcanism.help.page.welcome.entry.scroll_up.label"), Component.translatable("gui.arcanism.help.page.welcome.entry.scroll_up.note"));
+        addEntry("textures/gui/icons/small_arrow_down.png", Component.translatable("gui.arcanism.help.page.welcome.entry.scroll_down.label"), Component.translatable("gui.arcanism.help.page.welcome.entry.scroll_down.note"));
 
         var scrollbarRow = new Widget.BlankWidget(fromTopLeft(0, 0), fromTopRight(0, 12));
         scrollbarRow.addChild(new RectangleWidget(fromTopLeft(10, 2), fromTopLeft(4, 10)).mainColor(0x33ffffff));
@@ -35,9 +35,9 @@ public class IntroductionWidget extends HelpWindowWidgets.HelpBodyWidget {
         acceptSegment(scrollbarRow);
         acceptSegment(new MultilineTextWidget(fromTopLeft(22, 0), fromTopRight(-30, 0), Component.translatable("gui.arcanism.help.page.welcome.scrollbar.note")).lineHeight(11).noShadow().mainColor(0xff9a9a9a));
 
-        addHeading("textures/gui/icons/nametag.png", "gui.arcanism.help.page.welcome.heading.window");
-        addParagraph("gui.arcanism.help.page.welcome.window.resize");
+        addHeading("textures/gui/icons/nametag.png", Component.translatable("gui.arcanism.help.page.welcome.heading.window"));
+        addParagraph(Component.translatable("gui.arcanism.help.page.welcome.window.resize"));
 
-        addNote("gui.arcanism.help.page.welcome.note.close.title", "gui.arcanism.help.page.welcome.note.close.text");
+        addNote(Component.translatable("gui.arcanism.help.page.welcome.note.close.title"), Component.translatable("gui.arcanism.help.page.welcome.note.close.text"));
     }
 }

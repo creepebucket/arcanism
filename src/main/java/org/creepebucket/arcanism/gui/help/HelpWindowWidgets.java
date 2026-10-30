@@ -204,39 +204,10 @@ public class HelpWindowWidgets {
             accumulatedY += widget.h() + 10;
         }
 
-        /**
-         * 添加一段正文, 按内容区宽度自动换行。
-         *
-         * @param text 正文内容
-         */
         public void addParagraph(Component text) {
             acceptSegment(new MultilineTextWidget(fromTopLeft(6, 0), fromTopRight(-14, 0), text).lineHeight(12).noShadow().mainColor(0xffd6d6d6));
         }
 
-        /**
-         * 添加一段正文, 按内容区宽度自动换行。
-         *
-         * @param key 翻译键
-         */
-        public void addParagraph(String key) {
-            addParagraph(Component.translatable(key));
-        }
-
-        /**
-         * 添加一段正文, 按内容区宽度自动换行。文字原样显示, 不经过翻译。
-         *
-         * @param text 正文内容
-         */
-        public void addParagraphLiteral(String text) {
-            addParagraph(Component.literal(text));
-        }
-
-        /**
-         * 添加小节标题: 16x16 图标 + 加粗标题 + 分隔线。
-         *
-         * @param icon  图标路径, 相对 assets/arcanism/, 如 textures/gui/icons/directory.png
-         * @param title 标题文字
-         */
         public void addHeading(String icon, Component title) {
             var row = new Widget.BlankWidget(fromTopLeft(0, 0), fromTopRight(0, 20));
             row.addChild(new TextureWidget(fromTopLeft(6, 2), Identifier.fromNamespaceAndPath(MODID, icon), fromTopLeft(16, 16)).mainColor(ModColors.MAIN_COLOR_M));
@@ -245,33 +216,6 @@ public class HelpWindowWidgets {
             acceptSegment(row);
         }
 
-        /**
-         * 添加小节标题: 16x16 图标 + 加粗标题 + 分隔线。
-         *
-         * @param icon  图标路径, 相对 assets/arcanism/, 如 textures/gui/icons/directory.png
-         * @param titleKey 标题翻译键
-         */
-        public void addHeading(String icon, String titleKey) {
-            addHeading(icon, Component.translatable(titleKey));
-        }
-
-        /**
-         * 添加小节标题: 16x16 图标 + 加粗标题 + 分隔线。标题原样显示, 不经过翻译。
-         *
-         * @param icon  图标路径, 相对 assets/arcanism/, 如 textures/gui/icons/directory.png
-         * @param title 标题文字
-         */
-        public void addHeadingLiteral(String icon, String title) {
-            addHeading(icon, Component.literal(title));
-        }
-
-        /**
-         * 添加一条带图标的条目: 8x8 图标 + 标签 + 缩进说明。
-         *
-         * @param icon  图标路径, 相对 assets/arcanism/, 如 textures/gui/icons/small_arrow_right.png
-         * @param label 条目标签
-         * @param note  条目说明, 按内容区宽度自动换行
-         */
         public void addEntry(String icon, Component label, Component note) {
             var row = new Widget.BlankWidget(fromTopLeft(0, 0), fromTopRight(0, 12));
             row.addChild(new TextureWidget(fromTopLeft(10, 2), Identifier.fromNamespaceAndPath(MODID, icon), fromTopLeft(8, 8)).mainColor(ModColors.MAIN_COLOR_M));
@@ -280,126 +224,18 @@ public class HelpWindowWidgets {
             acceptSegment(new MultilineTextWidget(fromTopLeft(22, 0), fromTopRight(-30, 0), note).lineHeight(11).noShadow().mainColor(0xff9a9a9a));
         }
 
-        /**
-         * 添加一条带图标的条目: 8x8 图标 + 标签 + 缩进说明。
-         *
-         * @param icon  图标路径, 相对 assets/arcanism/, 如 textures/gui/icons/small_arrow_right.png
-         * @param labelKey 条目标签翻译键
-         * @param noteKey  条目说明翻译键, 按内容区宽度自动换行
-         */
-        public void addEntry(String icon, String labelKey, String noteKey) {
-            addEntry(icon, Component.translatable(labelKey), Component.translatable(noteKey));
-        }
-
-        /**
-         * 添加一条带图标的条目: 8x8 图标 + 标签 + 缩进说明。文字原样显示, 不经过翻译。
-         *
-         * @param icon  图标路径, 相对 assets/arcanism/, 如 textures/gui/icons/small_arrow_right.png
-         * @param label 条目标签
-         * @param note  条目说明, 按内容区宽度自动换行
-         */
-        public void addEntryLiteral(String icon, String label, String note) {
-            addEntry(icon, Component.literal(label), Component.literal(note));
-        }
-
-        /**
-         * 添加提示框, 主题色为动量青, 用于补充说明。
-         *
-         * @param title 框标题
-         * @param text  框内正文
-         */
         public void addNote(Component title, Component text) {
             addCallout("textures/gui/icons/information.png", title, ModColors.MAIN_COLOR_M, text);
         }
 
-        /**
-         * 添加提示框, 主题色为动量青, 用于补充说明。
-         *
-         * @param titleKey 框标题翻译键
-         * @param textKey  框内正文翻译键
-         */
-        public void addNote(String titleKey, String textKey) {
-            addNote(Component.translatable(titleKey), Component.translatable(textKey));
-        }
-
-        /**
-         * 添加提示框, 主题色为动量青, 用于补充说明。文字原样显示, 不经过翻译。
-         *
-         * @param title 框标题
-         * @param text  框内正文
-         */
-        public void addNoteLiteral(String title, String text) {
-            addNote(Component.literal(title), Component.literal(text));
-        }
-
-        /**
-         * 添加重要框, 主题色为温度红, 用于强调不可忽略的内容。
-         *
-         * @param title 框标题
-         * @param text  框内正文
-         */
         public void addImportant(Component title, Component text) {
-            addCallout("textures/gui/icons/warning.png", title, ModColors.MAIN_COLOR_T, text);
+            addCallout("textures/gui/icons/errors.png", title, ModColors.MAIN_COLOR_T, text);
         }
 
-        /**
-         * 添加重要框, 主题色为温度红, 用于强调不可忽略的内容。
-         *
-         * @param titleKey 框标题翻译键
-         * @param textKey  框内正文翻译键
-         */
-        public void addImportant(String titleKey, String textKey) {
-            addImportant(Component.translatable(titleKey), Component.translatable(textKey));
-        }
-
-        /**
-         * 添加重要框, 主题色为温度红, 用于强调不可忽略的内容。文字原样显示, 不经过翻译。
-         *
-         * @param title 框标题
-         * @param text  框内正文
-         */
-        public void addImportantLiteral(String title, String text) {
-            addImportant(Component.literal(title), Component.literal(text));
-        }
-
-        /**
-         * 添加警告框, 主题色为辐射黄, 用于提醒可能出错的用法。
-         *
-         * @param title 框标题
-         * @param text  框内正文
-         */
         public void addWarning(Component title, Component text) {
             addCallout("textures/gui/icons/warning.png", title, ModColors.MAIN_COLOR_R, text);
         }
 
-        /**
-         * 添加警告框, 主题色为辐射黄, 用于提醒可能出错的用法。
-         *
-         * @param titleKey 框标题翻译键
-         * @param textKey  框内正文翻译键
-         */
-        public void addWarning(String titleKey, String textKey) {
-            addWarning(Component.translatable(titleKey), Component.translatable(textKey));
-        }
-
-        /**
-         * 添加警告框, 主题色为辐射黄, 用于提醒可能出错的用法。文字原样显示, 不经过翻译。
-         *
-         * @param title 框标题
-         * @param text  框内正文
-         */
-        public void addWarningLiteral(String title, String text) {
-            addWarning(Component.literal(title), Component.literal(text));
-        }
-
-        /**
-         * 提示框的通用实现: 淡色背景 + 左侧竖条 + 16x16 图标 + 加粗标题 + 正文。
-         *
-         * @param icon   图标路径, 相对 assets/arcanism/
-         * @param title  框标题
-         * @param accent 主题色, 决定背景、竖条、图标与标题的颜色
-         * @param text   框内正文, 按内容区宽度自动换行
-         */
         public void addCallout(String icon, Component title, Color accent, Component text) {
             var row = new Widget.BlankWidget(fromTopLeft(0, 0), fromTopLeft(w(), 0));
             // 先挂到 textDiv 上, 让正文换行时能取到宽度, 高度随后补回 accumulatedY
@@ -415,30 +251,6 @@ public class HelpWindowWidgets {
             var height = 26 + body.h() + 8;
             row.dh.setImmediate(height);
             accumulatedY += height;
-        }
-
-        /**
-         * 提示框的通用实现: 淡色背景 + 左侧竖条 + 16x16 图标 + 加粗标题 + 正文。
-         *
-         * @param icon   图标路径, 相对 assets/arcanism/
-         * @param titleKey  框标题翻译键
-         * @param accent 主题色, 决定背景、竖条、图标与标题的颜色
-         * @param textKey   框内正文翻译键, 按内容区宽度自动换行
-         */
-        public void addCallout(String icon, String titleKey, Color accent, String textKey) {
-            addCallout(icon, Component.translatable(titleKey), accent, Component.translatable(textKey));
-        }
-
-        /**
-         * 提示框的通用实现: 淡色背景 + 左侧竖条 + 16x16 图标 + 加粗标题 + 正文。文字原样显示, 不经过翻译。
-         *
-         * @param icon   图标路径, 相对 assets/arcanism/
-         * @param title  框标题
-         * @param accent 主题色, 决定背景、竖条、图标与标题的颜色
-         * @param text   框内正文, 按内容区宽度自动换行
-         */
-        public void addCalloutLiteral(String icon, String title, Color accent, String text) {
-            addCallout(icon, Component.literal(title), accent, Component.literal(text));
         }
 
         public void recalculateLayout() {
