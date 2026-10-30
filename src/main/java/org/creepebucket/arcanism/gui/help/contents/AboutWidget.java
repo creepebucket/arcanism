@@ -11,16 +11,16 @@ import static org.creepebucket.arcanism.Arcanism.MODID;
 
 public class AboutWidget extends HelpWindowWidgets.HelpBodyWidget {
     public AboutWidget() {
-        super(Component.literal("关于 Arcanism"));
+        super(Component.translatable("gui.arcanism.help.page.about.title"));
     }
 
     @Override
     public void buildContent() {
         acceptSegment(new TextureWidget(Coordinate.fromCenterTop(0, 0), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/logo_long.png"), Coordinate.fromTopLeft(160, 32)).centerAlign());
-        addParagraph(Component.literal("Arcanism 是一个融合了科技要素和编程要素的魔法 Mod。这个 Mod 以魔力的生产与消耗作为核心玩法，构建了一套魔力体系。"));
-        addParagraph(Component.literal("Mod版本 " + ModList.get().getModContainerById(MODID).orElseThrow().getModInfo().getVersion().toString()));
-        addHeading("people", Component.literal("主要贡献者"));
-        addParagraph(Component.literal("程序: creepebucket"));
-        addParagraph(Component.literal("美术: LettyWhiterock_"));
+        addParagraph(Component.translatable("gui.arcanism.help.page.about.intro"));
+        addParagraph(Component.translatable("gui.arcanism.help.page.about.version", ModList.get().getModContainerById(MODID).orElseThrow().getModInfo().getVersion().toString()));
+        addHeading("people", Component.translatable("gui.arcanism.help.page.about.heading.contributors"));
+        addParagraph(Component.translatable("gui.arcanism.help.page.about.contributor.programmer"));
+        addParagraph(Component.translatable("gui.arcanism.help.page.about.contributor.artist"));
     }
 }

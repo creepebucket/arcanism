@@ -237,15 +237,15 @@ public class HelpWindowWidgets {
         }
 
         public void addNote(Component text) {
-            addCallout("information", Component.literal("提示"), ModColors.MAIN_COLOR_M, text);
+            addCallout("information", Component.translatable("gui.arcanism.help.callout.note"), ModColors.MAIN_COLOR_M, text);
         }
 
         public void addImportant(Component text) {
-            addCallout("errors", Component.literal("重要"), ModColors.MAIN_COLOR_T, text);
+            addCallout("errors", Component.translatable("gui.arcanism.help.callout.important"), ModColors.MAIN_COLOR_T, text);
         }
 
         public void addWarning(Component text) {
-            addCallout("warning", Component.literal("警告"), ModColors.MAIN_COLOR_R, text);
+            addCallout("warning", Component.translatable("gui.arcanism.help.callout.warning"), ModColors.MAIN_COLOR_R, text);
         }
 
         public void addCallout(String icon, Component title, Color accent, Component text) {
