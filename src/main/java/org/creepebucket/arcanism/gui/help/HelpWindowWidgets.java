@@ -186,12 +186,12 @@ public class HelpWindowWidgets {
 
     public static abstract class HelpBodyWidget extends Widget implements Lifecycle {
         public Widget textDiv, bg;
-        public String name;
+        public Component name;
         public int accumulatedY = 10;
         public ScrollbarWidget scrollbar;
         public ScrollRegionWidget scroll;
 
-        public HelpBodyWidget(String name) {
+        public HelpBodyWidget(Component name) {
             super(ZERO, FULL);
 
             this.name = name;
@@ -210,7 +210,7 @@ public class HelpWindowWidgets {
 
         public void addHeading(String icon, Component title) {
             var row = new Widget.BlankWidget(fromTopLeft(0, 0), fromTopRight(0, 20));
-            row.addChild(new TextureWidget(fromTopLeft(6, 2), Identifier.fromNamespaceAndPath(MODID, icon), fromTopLeft(16, 16)).mainColor(ModColors.MAIN_COLOR_M));
+            row.addChild(new TextureWidget(fromTopLeft(6, 2), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/" + icon + ".png"), fromTopLeft(16, 16)).mainColor(ModColors.MAIN_COLOR_M));
             row.addChild(new TextWidget(fromTopLeft(28, 5), title.copy().withStyle(ChatFormatting.BOLD)).noShadow().mainColor(0xffffffff));
             row.addChild(new RectangleWidget(fromTopLeft(28, 17), fromTopRight(-40, 1)).mainColor(ModColors.MAIN_COLOR_M.withAlpha(0x50)));
             acceptSegment(row);
@@ -218,22 +218,34 @@ public class HelpWindowWidgets {
 
         public void addEntry(String icon, Component label, Component note) {
             var row = new Widget.BlankWidget(fromTopLeft(0, 0), fromTopRight(0, 12));
-            row.addChild(new TextureWidget(fromTopLeft(10, 2), Identifier.fromNamespaceAndPath(MODID, icon), fromTopLeft(8, 8)).mainColor(ModColors.MAIN_COLOR_M));
+            row.addChild(new TextureWidget(fromTopLeft(10, 1), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/" + icon + ".png"), fromTopLeft(8, 8)).mainColor(ModColors.MAIN_COLOR_M));
             row.addChild(new TextWidget(fromTopLeft(22, 1), label).noShadow().mainColor(0xffe8feff));
             acceptSegment(row);
-            acceptSegment(new MultilineTextWidget(fromTopLeft(22, 0), fromTopRight(-30, 0), note).lineHeight(11).noShadow().mainColor(0xff9a9a9a));
+            acceptSegment(new MultilineTextWidget(fromTopLeft(22, 0), fromTopRight(-30, 0), note).lineHeight(11).noShadow().mainColor(0xffd6d6d6));
         }
 
         public void addNote(Component title, Component text) {
-            addCallout("textures/gui/icons/information.png", title, ModColors.MAIN_COLOR_M, text);
+            addCallout("information", title, ModColors.MAIN_COLOR_M, text);
         }
 
         public void addImportant(Component title, Component text) {
-            addCallout("textures/gui/icons/errors.png", title, ModColors.MAIN_COLOR_T, text);
+            addCallout("errors", title, ModColors.MAIN_COLOR_T, text);
         }
 
         public void addWarning(Component title, Component text) {
-            addCallout("textures/gui/icons/warning.png", title, ModColors.MAIN_COLOR_R, text);
+            addCallout("warning", title, ModColors.MAIN_COLOR_R, text);
+        }
+
+        public void addNote(Component text) {
+            addCallout("information", Component.literal("提示"), ModColors.MAIN_COLOR_M, text);
+        }
+
+        public void addImportant(Component text) {
+            addCallout("errors", Component.literal("重要"), ModColors.MAIN_COLOR_T, text);
+        }
+
+        public void addWarning(Component text) {
+            addCallout("warning", Component.literal("警告"), ModColors.MAIN_COLOR_R, text);
         }
 
         public void addCallout(String icon, Component title, Color accent, Component text) {
@@ -243,7 +255,7 @@ public class HelpWindowWidgets {
 
             row.addChild(new RectangleWidget(fromTopLeft(0, 0), fromBottomRight(0, 0)).mainColor(accent.withAlpha(0x12)));
             row.addChild(new RectangleWidget(fromTopLeft(0, 0), fromBottomLeft(2, 0)).mainColor(accent));
-            row.addChild(new TextureWidget(fromTopLeft(8, 8), Identifier.fromNamespaceAndPath(MODID, icon), fromTopLeft(16, 16)).mainColor(accent));
+            row.addChild(new TextureWidget(fromTopLeft(8, 8), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/" + icon + ".png"), fromTopLeft(16, 16)).mainColor(accent));
             row.addChild(new TextWidget(fromTopLeft(30, 11), title.copy().withStyle(ChatFormatting.BOLD)).noShadow().mainColor(accent));
             var body = new MultilineTextWidget(fromTopLeft(30, 26), fromTopLeft(w() - 40, 0), text).lineHeight(11).noShadow().mainColor(0xffd6d6d6);
             row.addChild(body);
@@ -293,7 +305,7 @@ public class HelpWindowWidgets {
             textDiv = cull.addChild(new BlankWidget(ZERO, FULL));
             bg = textDiv.addChildFirst(new RectangleWidget(ZERO, ZERO).applyTheme(ThemeTemplate.DARK_BG));
             addChildFirst(new RectangleWidget(ZERO, fromTopRight(0, 30)).applyTheme(ThemeTemplate.DARK_BG));
-            addChild(new TextWidget(fromTopLeft(6, 6), Component.translatable(name)).noShadow().scaled(2));
+            addChild(new TextWidget(fromTopLeft(6, 6), name).noShadow().scaled(2));
             addChild(new RectangleWidget(fromTopLeft(6, 26), fromTopRight(-16, 1)));
 
             scrollbar = (ScrollbarWidget) addChild(new ScrollbarWidget(fromTopRight(-4, 30), fromBottomLeft(4, -30), ZERO, textDiv.dy, "y").reverseDirection().bgColor(0));

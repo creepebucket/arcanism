@@ -5,7 +5,7 @@ import org.creepebucket.arcanism.gui.help.HelpWindowWidgets;
 
 public class UnimplementedWidget extends HelpWindowWidgets.HelpBodyWidget {
     public UnimplementedWidget() {
-        super("gui.arcanism.help.page.unimplemented.title");
+        super(Component.translatable("gui.arcanism.help.page.unimplemented.title"));
     }
 
     @Override

@@ -4,8 +4,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.fml.ModList;
+import org.creepebucket.arcanism.gui.help.contents.AboutWidget;
 import org.creepebucket.arcanism.gui.help.contents.IntroductionWidget;
 import org.creepebucket.arcanism.gui.help.contents.UnimplementedWidget;
+import org.creepebucket.arcanism.gui.help.contents.WhatIsManaWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.WandWidget;
 import org.creepebucket.arcanism.gui.lib.api.Animation;
 import org.creepebucket.arcanism.gui.lib.api.ThemeTemplate;
 import org.creepebucket.arcanism.gui.lib.api.Widget;
@@ -29,6 +32,9 @@ public class HelpScreen extends Screen<HelpMenu> {
 
 	@Override
 	public void buildWidget() {
+
+		// TODO: 根据已读状态区分, 条目悬停动画
+
 		var div = new Widget.BlankWidget(CENTER, fromBottomLeft(300, -20)).centerAlign().centerAlignY();
 		addWidget(div);
 
@@ -40,9 +46,7 @@ public class HelpScreen extends Screen<HelpMenu> {
 		var dirMap = new ModUtils.RecursiveMap<String>();
 		dirMap.put("welcome", null);
 		dirMap.put("about", null);
-		dirMap.put("mana_basics", new ModUtils.RecursiveMap<>());
-		dirMap.get("mana_basics").put("what_is_mana", null);
-		dirMap.get("mana_basics").put("generation_and_conversion", null);
+		dirMap.put("what_is_mana", null);
 		dirMap.put("casting", new ModUtils.RecursiveMap<>());
 		dirMap.get("casting").put("wand", null);
 		dirMap.get("casting").put("wand_plugins", null);
@@ -77,6 +81,10 @@ public class HelpScreen extends Screen<HelpMenu> {
 
 		var contentMap = new HashMap<String, Widget>();
 		contentMap.put("welcome", new IntroductionWidget());
+		contentMap.put("about", new AboutWidget());
+		contentMap.put("what_is_mana", new WhatIsManaWidget());
+		// casting
+		contentMap.put("wand", new WandWidget());
 
 		var sidebar = (HelpWindowWidgets.SidebarWidget) div.addChild(new HelpWindowWidgets.SidebarWidget(fromTopLeft(0, 50), fromBottomLeft(100, -50), dirMap));
 		var contentDiv = div.addChild(new Widget.BlankWidget(fromTopLeft(110, 0), fromBottomRight(-110, 0)));
