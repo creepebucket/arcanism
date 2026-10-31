@@ -78,7 +78,7 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) >= (Double) paramsList.get(0)), List.of(SpellValueType.BOOLEAN));
+            return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) >= (Double) paramsList.get(1)), List.of(SpellValueType.BOOLEAN));
         }
     }
 

@@ -115,11 +115,11 @@ public class FlowControlSpell {
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            // 向右搜索到最近的 IfEnd/LoopEnd
+            // 向右搜索到最近的 LoopEnd
 
             SpellItemLogic pointer = this;
             while (pointer != null) {
-                if (pointer instanceof IfEndSpell || pointer instanceof LoopEndSpell) {
+                if (pointer instanceof LoopEndSpell) {
                     return new ExecutionResult(pointer.next, 0, false, null, null);
                 }
                 pointer = pointer.next;

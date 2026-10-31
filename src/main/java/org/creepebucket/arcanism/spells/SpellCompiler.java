@@ -223,6 +223,16 @@ public class SpellCompiler {
         return ast == null ? new SpellSequence() : ast.flatten();
     }
 
+    /*
+     * 判断 seq 的下一个法术是否会作为 spell 的右操作数
+     * 一元算子后面紧跟同级或更低优先级的法术时, 应按后缀处理
+     */
+    public static boolean hasRightOperand(SpellSequence seq, SpellItemLogic spell) {
+        if (seq.head == null) return false;
+        double lbp = seq.head.rightConnectivity ? seq.head.precedence : seq.head.precedence + 0.1;
+        return lbp > spell.precedence + 0.1;
+    }
+
     public static SpellAst parse(SpellSequence seq, double min_binding_power) {
         SpellAst lhs = null, rhs = null;
 
@@ -239,7 +249,7 @@ public class SpellCompiler {
             if (seq.head instanceof ParenSpell.RParenSpell) seq.popLeft();
         } else if (firstSpell instanceof CommaSpell || firstSpell instanceof ParenSpell.RParenSpell) {
             // pass
-        } else if (firstSpell != null && !firstSpell.bypassShunting && firstSpell.inputTypes.get(0).size() == 1) {
+        } else if (firstSpell != null && !firstSpell.bypassShunting && firstSpell.inputTypes.get(0).size() == 1 && firstSpell.inputTypes.get(0).get(0) != SpellValueType.EMPTY) {
             rhs = parse(seq, firstSpell.precedence);
             lhs = new SpellAst(firstSpell, rhs, null);
         } else {
@@ -260,8 +270,13 @@ public class SpellCompiler {
             // 递归解析右子树
             seq.popLeft();
 
+            // 逗号只做语句分隔, 不进最终序列
+            if (spell instanceof CommaSpell) continue;
+
             // 处理不同法术
             if (spell instanceof ValueLiteralSpell || spell instanceof DynamicConstantSpell || spell.bypassShunting) {
+                lhs = new SpellAst(spell, lhs, null);
+            } else if (spell.inputTypes.get(0).size() == 1 && spell.inputTypes.get(0).get(0) != SpellValueType.EMPTY && !hasRightOperand(seq, spell)) {
                 lhs = new SpellAst(spell, lhs, null);
             } else {
                 rhs = parse(seq, rbp);
