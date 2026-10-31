@@ -8,12 +8,20 @@ import org.creepebucket.arcanism.gui.help.contents.AboutWidget;
 import org.creepebucket.arcanism.gui.help.contents.IntroductionWidget;
 import org.creepebucket.arcanism.gui.help.contents.UnimplementedWidget;
 import org.creepebucket.arcanism.gui.help.contents.WhatIsManaWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.WandPluginsWidget;
 import org.creepebucket.arcanism.gui.help.contents.casting.WandWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.debugger.BreakpointsWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.debugger.ExecutionViewWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.debugger.SpellControlWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.gui.CastPanelWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.gui.SpellEditorWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.gui.SpellPanelWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.spell_syntax.SpellTooltipWidget;
+import org.creepebucket.arcanism.gui.help.contents.casting.spell_syntax.SyntaxOverviewWidget;
 import org.creepebucket.arcanism.gui.lib.api.Animation;
 import org.creepebucket.arcanism.gui.lib.api.ThemeTemplate;
 import org.creepebucket.arcanism.gui.lib.api.Widget;
 import org.creepebucket.arcanism.gui.lib.ui.Screen;
-import org.creepebucket.arcanism.gui.lib.widgets.MouseCursorWidget;
 import org.creepebucket.arcanism.gui.lib.widgets.RectangleWidget;
 import org.creepebucket.arcanism.gui.lib.widgets.TextWidget;
 import org.creepebucket.arcanism.gui.lib.widgets.TextureWidget;
@@ -85,6 +93,18 @@ public class HelpScreen extends Screen<HelpMenu> {
 		contentMap.put("what_is_mana", new WhatIsManaWidget());
 		// casting
 		contentMap.put("wand", new WandWidget());
+		contentMap.put("wand_plugins", new WandPluginsWidget());
+		//gui
+		contentMap.put("spell_panel", new SpellPanelWidget());
+		contentMap.put("spell_editor", new SpellEditorWidget());
+		contentMap.put("cast_panel", new CastPanelWidget());
+		//debugger
+		contentMap.put("breakpoints", new BreakpointsWidget());
+		contentMap.put("execution_view", new ExecutionViewWidget());
+		contentMap.put("spell_control", new SpellControlWidget());
+		//spell_syntax
+		contentMap.put("syntax_overview", new SyntaxOverviewWidget());
+		contentMap.put("spell_tooltip", new SpellTooltipWidget());
 
 		var sidebar = (HelpWindowWidgets.SidebarWidget) div.addChild(new HelpWindowWidgets.SidebarWidget(fromTopLeft(0, 50), fromBottomLeft(100, -50), dirMap));
 		var contentDiv = div.addChild(new Widget.BlankWidget(fromTopLeft(110, 0), fromBottomRight(-110, 0)));
@@ -114,7 +134,5 @@ public class HelpScreen extends Screen<HelpMenu> {
 			newChild.animations.removeIf(animation -> animation instanceof Animation.FadeOut);
 			newChild.addAnimation(new Animation.FadeIn.FromTop(0.3), 0.2);
 		};
-
-		addWidget(new MouseCursorWidget());
 	}
 }

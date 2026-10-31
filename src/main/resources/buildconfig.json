@@ -180,6 +180,8 @@
       {"from_top_left": [864, 0], "from_bottom_right": [871, 7], "target_img_path": "assets/arcanism/textures/gui/icons/7_small.png"},
       {"from_top_left": [880, 0], "from_bottom_right": [887, 7], "target_img_path": "assets/arcanism/textures/gui/icons/8_small.png"},
       {"from_top_left": [896, 0], "from_bottom_right": [903, 7], "target_img_path": "assets/arcanism/textures/gui/icons/9_small.png"},
+      {"from_top_left": [912, 0], "from_bottom_right": [927, 15], "target_img_path": "assets/arcanism/textures/gui/icons/copy.png"},
+      {"from_top_left": [928, 0], "from_bottom_right": [943, 15], "target_img_path": "assets/arcanism/textures/gui/icons/copied.png"},
       {"from_top_left": [0, 16], "from_bottom_right": [47, 31], "target_img_path": "assets/arcanism/textures/gui/ui/slant_end_bar_up.png"},
       {"from_top_left": [48, 16], "from_bottom_right": [95, 31], "target_img_path": "assets/arcanism/textures/gui/ui/slant_end_bar_down.png"},
       {"from_top_left": [96, 16], "from_bottom_right": [127, 31], "target_img_path": "assets/arcanism/textures/gui/ui/stright_end_bar_left.png"},
@@ -189,7 +191,13 @@
       {"from_top_left": [0, 32], "from_bottom_right": [95, 63], "target_img_path": "assets/arcanism/textures/gui/ui/logo.png"},
       {"from_top_left": [96, 32], "from_bottom_right": [255, 63], "target_img_path": "assets/arcanism/textures/gui/ui/logo_long.png"},
       {"from_top_left": [0, 64], "from_bottom_right": [127, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand1.png"},
-      {"from_top_left": [128, 64], "from_bottom_right": [255, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand2.png"}
+      {"from_top_left": [128, 64], "from_bottom_right": [255, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand2.png"},
+      {"from_top_left": [256, 64], "from_bottom_right": [383, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand3.png"},
+      {"from_top_left": [384, 64], "from_bottom_right": [511, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand4.png"},
+      {"from_top_left": [512, 64], "from_bottom_right": [639, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand5.png"},
+      {"from_top_left": [640, 64], "from_bottom_right": [767, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand6.png"},
+      {"from_top_left": [768, 64], "from_bottom_right": [895, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand7.png"},
+      {"from_top_left": [896, 64], "from_bottom_right": [1023, 143], "target_img_path": "assets/arcanism/textures/gui/examples/wand8.png"}
     ]
   }
 ]
