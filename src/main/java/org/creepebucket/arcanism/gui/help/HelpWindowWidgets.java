@@ -1,12 +1,14 @@
 package org.creepebucket.arcanism.gui.help;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.creepebucket.arcanism.gui.lib.api.*;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Clickable;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Lifecycle;
+import org.creepebucket.arcanism.gui.lib.api.widgets.Renderable;
 import org.creepebucket.arcanism.gui.lib.widgets.*;
 import org.creepebucket.arcanism.utils.ModColors;
 import org.creepebucket.arcanism.utils.ModUtils;
@@ -103,9 +105,10 @@ public class HelpWindowWidgets {
             recalculateLayout();
         }
 
-        public static class BarItem extends Widget implements Lifecycle, Clickable {
+        public static class BarItem extends Widget implements Lifecycle, Clickable, Renderable {
             public String name;
             public SidebarWidget bar;
+            public Widget highlight;
             public Map<String, BarItem> subItems = new LinkedHashMap<>();
             public ModUtils.RecursiveMap<String> directory;
             public boolean expanded = false;
@@ -123,6 +126,8 @@ public class HelpWindowWidgets {
 
             @Override
             public void onInitialize() {
+                highlight = addChild(new RectangleWidget(ZERO, fromBottomLeft(0, 0))).mainColor(ModColors.MAIN_COLOR_M.withAlpha(32));
+
                 arrow = addChild(new TextureWidget(fromCenterLeft(0, 0), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/small_arrow_" + (directory == null ? "in.png" : "right.png")), fromTopLeft(8, 8)).centerAlignY());
                 text = (TextWidget) addChild(new TextWidget(fromCenterLeft(10, 0), Component.translatable("gui.arcanism.help.dir." + name)).noShadow().centerAlignY());
 
@@ -180,6 +185,21 @@ public class HelpWindowWidgets {
 
                 bar.recalculateLayout();
                 return true;
+            }
+
+            @Override
+            public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+                var reducedX = dx.target + x() - bar.x();
+
+                if (bar.selectedName == name) {
+                    highlight.dx.setImmediate(0 - reducedX);
+                    highlight.leftAlign();
+                    highlight.dw.set(w() + reducedX);
+                } else {
+                    highlight.dx.setImmediate(w() + reducedX);
+                    highlight.rightAlign();
+                    highlight.dw.set(0);
+                }
             }
         }
     }

@@ -10,18 +10,16 @@ import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.world.entity.player.Inventory;
 import org.creepebucket.arcanism.client.ClientUiContext;
 import org.creepebucket.arcanism.gui.lib.api.ClientSlotManager;
-import org.creepebucket.arcanism.gui.lib.api.Coordinate;
 import org.creepebucket.arcanism.gui.lib.api.SlotManipulationScreen;
 import org.creepebucket.arcanism.gui.lib.api.Widget;
 import org.creepebucket.arcanism.gui.lib.api.widgets.*;
 import org.creepebucket.arcanism.network.dataPackets.HookTriggerPacket;
 import org.creepebucket.arcanism.network.dataPackets.SimpleKvPacket;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
-
-import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
-
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.updateContext;
 import static org.creepebucket.arcanism.utils.ModUtils.now;
 
 public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
@@ -217,6 +215,11 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        if (event.hasAltDown() && event.input() == GLFW.GLFW_KEY_S) {
+            Minecraft.getInstance().player.connection.sendCommand("arcanism help");
+            return true;
+        }
+
         super.keyPressed(event);
         for (Widget widget : this.root.allChild()) {
             if (!widget.isEffectivelyEnabled()) continue;

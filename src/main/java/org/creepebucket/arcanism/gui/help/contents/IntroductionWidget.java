@@ -12,6 +12,7 @@ public class IntroductionWidget extends HelpWindowWidgets.HelpBodyWidget {
     public void buildContent() {
         addParagraph(Component.translatable("gui.arcanism.help.page.welcome.intro"));
         addParagraph(Component.translatable("gui.arcanism.help.page.welcome.usage"));
+        addNote(Component.literal("在任意模组UI中按下 Alt+S 即可快速打开帮助页面"));
         addHeading("directory", Component.translatable("gui.arcanism.help.page.welcome.heading.directory"));
         addParagraph(Component.translatable("gui.arcanism.help.page.welcome.directory_intro"));
         addEntry("small_arrow_right", Component.translatable("gui.arcanism.help.page.welcome.entry.group.label"), Component.translatable("gui.arcanism.help.page.welcome.entry.group.note"));
