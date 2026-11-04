@@ -53,8 +53,8 @@ public abstract class Widget {
     public List<Runnable> clickBehaviors = new ArrayList<>();
 
     public Widget(Coordinate pos, Coordinate size) {
-        this.originalPos = pos;
-        this.originalSize = size;
+        this.originalPos = new Coordinate(pos.x, pos.y);
+        this.originalSize = new Coordinate(size.x, size.y);
 
         smoothedValues.addAll(List.of(dx, dy, dw, dh));
     }

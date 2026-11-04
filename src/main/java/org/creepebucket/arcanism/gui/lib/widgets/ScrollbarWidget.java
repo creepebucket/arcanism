@@ -45,7 +45,7 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         if (axis == "x" || axis == "X") screenValue = w();
         else screenValue = h();
 
-        double blockLengthRatio = Math.min(1.0, (double) screenValue / Math.max(1, contentLength > 0 ? contentLength : (maxValue - minValue)));
+        double blockLengthRatio = Math.min(1.0, (double) screenValue / Math.max(1, contentLength > 0 ? contentLength : (maxValue - minValue + screenValue)));
 
         int delta;
 
@@ -87,7 +87,7 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         if (axis == "x" || axis == "X") screenValue = w();
         else screenValue = h();
 
-        double blockLengthRatio = Math.min(1.0, (double) screenValue / Math.max(1, contentLength > 0 ? contentLength : (maxValue - minValue)));
+        double blockLengthRatio = Math.min(1.0, (double) screenValue / Math.max(1, contentLength > 0 ? contentLength : (maxValue - minValue + screenValue)));
         double blockStartRatio = (value.get() - minValue) / (maxValue - minValue);
         if (reverseDirection) blockStartRatio = 1 - blockStartRatio;
         blockStartRatio = blockStartRatio * (1 - blockLengthRatio);
