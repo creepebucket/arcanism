@@ -84,7 +84,6 @@ public class SpellStoragePlugin extends BasePlugin {
         rightShift.addAnimation(new Animation.FadeIn.FromRight(0.3), t);
 
         scrollBar.addAnimation(new Animation.FadeIn.FromRight(0.5), .05);
-        scroll.removeMyself();
 
         invTopBound.addAnimation(new Animation.FadeIn.FromTop(0.3), .05);
         invRightBound.addAnimation(new Animation.FadeIn.FromRight(0.3), .05);
