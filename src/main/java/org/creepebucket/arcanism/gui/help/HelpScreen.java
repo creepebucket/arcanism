@@ -8,6 +8,8 @@ import org.creepebucket.arcanism.gui.help.contents.AboutWidget;
 import org.creepebucket.arcanism.gui.help.contents.IntroductionWidget;
 import org.creepebucket.arcanism.gui.help.contents.UnimplementedWidget;
 import org.creepebucket.arcanism.gui.help.contents.WhatIsManaWidget;
+import org.creepebucket.arcanism.gui.help.contents.arcane_industry.machines.IoWidget;
+import org.creepebucket.arcanism.gui.help.contents.arcane_industry.machines.MachineOverviewWidget;
 import org.creepebucket.arcanism.gui.help.contents.casting.WandPluginsWidget;
 import org.creepebucket.arcanism.gui.help.contents.casting.WandWidget;
 import org.creepebucket.arcanism.gui.help.contents.casting.debugger.BreakpointsWidget;
@@ -18,6 +20,9 @@ import org.creepebucket.arcanism.gui.help.contents.casting.gui.SpellEditorWidget
 import org.creepebucket.arcanism.gui.help.contents.casting.gui.SpellPanelWidget;
 import org.creepebucket.arcanism.gui.help.contents.casting.spell_syntax.SpellTooltipWidget;
 import org.creepebucket.arcanism.gui.help.contents.casting.spell_syntax.SyntaxOverviewWidget;
+import org.creepebucket.arcanism.gui.help.contents.config.GameplayWidget;
+import org.creepebucket.arcanism.gui.help.contents.config.NetworkWidget;
+import org.creepebucket.arcanism.gui.help.contents.config.VisualsWidget;
 import org.creepebucket.arcanism.gui.lib.api.Animation;
 import org.creepebucket.arcanism.gui.lib.api.ThemeTemplate;
 import org.creepebucket.arcanism.gui.lib.api.Widget;
@@ -70,17 +75,8 @@ public class HelpScreen extends Screen<HelpMenu> {
 		dirMap.get("casting").get("spell_syntax").put("syntax_overview", null);
 		dirMap.get("casting").get("spell_syntax").put("spell_tooltip", null);
 		dirMap.put("arcane_industry", new ModUtils.RecursiveMap<>());
-		dirMap.get("arcane_industry").put("machines", new ModUtils.RecursiveMap<>());
-		dirMap.get("arcane_industry").get("machines").put("machine_overview", null);
-		dirMap.get("arcane_industry").get("machines").put("io", null);
-		dirMap.get("arcane_industry").get("machines").put("gui", new ModUtils.RecursiveMap<>());
-		dirMap.get("arcane_industry").get("machines").get("gui").put("network_info", null);
-		dirMap.get("arcane_industry").get("machines").get("gui").put("machine_info", null);
-		dirMap.get("arcane_industry").get("machines").get("gui").put("overclock", null);
-		dirMap.get("arcane_industry").put("mana_network", new ModUtils.RecursiveMap<>());
-		dirMap.get("arcane_industry").get("mana_network").put("network_overview", null);
-		dirMap.get("arcane_industry").get("mana_network").put("node_types", null);
-		dirMap.get("arcane_industry").get("mana_network").put("mana_calculation", null);
+		dirMap.get("arcane_industry").put("machine_overview", null);
+		dirMap.get("arcane_industry").put("io", null);
 		dirMap.put("config", new ModUtils.RecursiveMap<>());
 		dirMap.get("config").put("gameplay", null);
 		dirMap.get("config").put("visuals", null);
@@ -94,17 +90,24 @@ public class HelpScreen extends Screen<HelpMenu> {
 		// casting
 		contentMap.put("wand", new WandWidget());
 		contentMap.put("wand_plugins", new WandPluginsWidget());
-		//gui
+		// gui
 		contentMap.put("spell_panel", new SpellPanelWidget());
 		contentMap.put("spell_editor", new SpellEditorWidget());
 		contentMap.put("cast_panel", new CastPanelWidget());
-		//debugger
+		// debugger
 		contentMap.put("breakpoints", new BreakpointsWidget());
 		contentMap.put("execution_view", new ExecutionViewWidget());
 		contentMap.put("spell_control", new SpellControlWidget());
-		//spell_syntax
+		// spell_syntax
 		contentMap.put("syntax_overview", new SyntaxOverviewWidget());
 		contentMap.put("spell_tooltip", new SpellTooltipWidget());
+		// arcane_industry
+		contentMap.put("machine_overview", new MachineOverviewWidget());
+		contentMap.put("io", new IoWidget());
+		// config
+		contentMap.put("gameplay", new GameplayWidget());
+		contentMap.put("visuals", new VisualsWidget());
+		contentMap.put("network", new NetworkWidget());
 
 		var sidebar = (HelpWindowWidgets.SidebarWidget) div.addChild(new HelpWindowWidgets.SidebarWidget(fromTopLeft(0, 50), fromBottomLeft(100, -50), dirMap));
 		var contentDiv = div.addChild(new Widget.BlankWidget(fromTopLeft(110, 0), fromBottomRight(-110, 0)));
