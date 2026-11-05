@@ -145,7 +145,7 @@ public class WandWidgets {
         public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             int i = this.i - (int) dx.get() / 16;
             if (0 > i || i >= 1000) return;
-            delta2X.doStep(screen.dt);
+            delta2X.doStep(screen.dt());
 
             ClientSlotManager.setClientPosition(slot, (int) (x() + delta2X.get()), y());
 
@@ -446,8 +446,8 @@ public class WandWidgets {
 
             for (Notification notification : List.copyOf(notifications).reversed()) {
                 // 平滑dy
-                notification.speed += (notification.targetDy - notification.dy) * 200 * screen.dt - notification.speed * 30 * screen.dt;
-                notification.dy += notification.speed * screen.dt;
+                notification.speed += (notification.targetDy - notification.dy) * 200 * screen.dt() - notification.speed * 30 * screen.dt();
+                notification.dy += notification.speed * screen.dt();
 
                 // 检查是否超时
                 double now = System.nanoTime() / 1e9;

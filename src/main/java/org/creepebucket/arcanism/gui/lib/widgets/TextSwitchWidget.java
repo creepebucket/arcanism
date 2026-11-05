@@ -26,7 +26,7 @@ public class TextSwitchWidget extends Widget implements Renderable {
 
     @Override
     public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        textDy.doStep(screen.dt);
+        textDy.doStep(screen.dt());
 
         graphics.enableScissor(left(), top(), right(), bottom());
 

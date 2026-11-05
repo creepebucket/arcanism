@@ -46,6 +46,6 @@ public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle
 
         textWidget.mainColor(textColor().mix(bgColor(), pivot.get())).bgColor(bgColor());
 
-        pivot.doStep(screen.dt);
+        pivot.doStep(screen.dt());
     }
 }

@@ -538,6 +538,9 @@ public abstract class Widget {
     }
 
     public static class Root extends Widget {
+        public double lastFrame = now(), dt;
+        public float lastPartialTick = 0.0F;
+
         public Root() {
             super(fromTopLeft(0, 0), fromTopLeft(0, 0));
 
