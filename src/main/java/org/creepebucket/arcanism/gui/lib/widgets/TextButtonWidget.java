@@ -8,9 +8,9 @@ import org.creepebucket.arcanism.gui.lib.api.Coordinate;
 import org.creepebucket.arcanism.gui.lib.api.SmoothedValue;
 import org.creepebucket.arcanism.gui.lib.api.Widget;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Lifecycle;
+import org.creepebucket.arcanism.gui.lib.ui.WidgetManager;
 
-
-import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.fromCenter;
 
 public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle {
     public Component text;
@@ -31,7 +31,7 @@ public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle
 
     @Override
     public void onInitialize() {
-        textWidget = addChild(new TextWidget(fromCenter(-ClientUiContext.getFont().width(text) / 2, -4), text));
+        textWidget = addChild(new TextWidget(fromCenter(-ClientUiContext.getFont().width(text) / 2, -4), text).noShadow());
     }
 
     @Override
@@ -46,6 +46,6 @@ public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle
 
         textWidget.mainColor(textColor().mix(bgColor(), pivot.get())).bgColor(bgColor());
 
-        pivot.doStep(screen.dt());
+        pivot.doStep(((WidgetManager) screen).dt());
     }
 }

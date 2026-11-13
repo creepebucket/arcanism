@@ -1,21 +1,18 @@
 package org.creepebucket.arcanism.gui.lib.api;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Renderable;
-import org.creepebucket.arcanism.gui.lib.ui.Menu;
-import org.creepebucket.arcanism.gui.lib.ui.Screen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
-
 import static org.creepebucket.arcanism.utils.ModUtils.now;
 
-    /**
+/**
      * UI 控件基类：提供位置和尺寸的基础支持，通过实现功能接口来获得能力。
      */
 public abstract class Widget {
@@ -41,7 +38,7 @@ public abstract class Widget {
     public VerticalAlign verticalAlign = VerticalAlign.TOP;
     public List<Widget> children = new ArrayList<>();
     public Widget parent;
-    public Screen<? extends Menu> screen;
+    public Screen screen;
     public List<Animation> animations = new ArrayList<>();
     public List<SmoothedValue> smoothedValues = new ArrayList<>();
     public List<Widget> childrenCache;
@@ -111,25 +108,25 @@ public abstract class Widget {
                 renderable.render(graphics, mx, my, partialTick);
             }
 
-            // 检查动画过期/启动状态
-            var expiredAnimations = animations.stream().filter(Animation::isExpired).toList();
-            var startedAnimations = animations.stream().filter(Animation::isStarted).toList();
-
-            for (Animation animation : expiredAnimations) {
-                animation.onExpire(this);
-                animations.remove(animation);
-            }
-
-            for (Animation animation : startedAnimations) {
-                animation.onStart(this);
-            }
-
             // 平滑逻辑
             for (SmoothedValue value : smoothedValues) value.doStep(dt);
         }
 
         // 孩子的渲染逻辑
         if (enabled) for (Widget child : List.copyOf(children)) child.renderWidget(graphics, mx, my, partialTick, dt, isForeground);
+
+        // 检查动画过期/启动状态
+        var expiredAnimations = animations.stream().filter(Animation::isExpired).toList();
+        var startedAnimations = animations.stream().filter(Animation::isStarted).toList();
+
+        for (Animation animation : expiredAnimations) {
+            animation.onExpire(this);
+            animations.remove(animation);
+        }
+
+        for (Animation animation : startedAnimations) {
+            animation.onStart(this);
+        }
     }
 
     /**

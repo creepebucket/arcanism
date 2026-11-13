@@ -10,6 +10,7 @@ import org.creepebucket.arcanism.client.ClientUiContext;
 import org.creepebucket.arcanism.gui.lib.api.*;
 import org.creepebucket.arcanism.gui.lib.api.hooks.Hook;
 import org.creepebucket.arcanism.gui.lib.api.widgets.*;
+import org.creepebucket.arcanism.gui.lib.ui.WidgetManager;
 import org.creepebucket.arcanism.gui.lib.widgets.*;
 import org.creepebucket.arcanism.gui.wand.wand_plugins.BasePlugin;
 import org.creepebucket.arcanism.items.Wand;
@@ -145,7 +146,7 @@ public class WandWidgets {
         public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             int i = this.i - (int) dx.get() / 16;
             if (0 > i || i >= 1000) return;
-            delta2X.doStep(screen.dt());
+            delta2X.doStep(((WidgetManager) screen).dt());
 
             ClientSlotManager.setClientPosition(slot, (int) (x() + delta2X.get()), y());
 
@@ -165,7 +166,7 @@ public class WandWidgets {
                 // 根据距离计算透明度并显示数字
                 double distance = (mouseX - x + 1) * (mouseX - x + 1) + (mouseY - y + 2) * (mouseY - y + 2);
                 // 检查断点
-                int renderColor = ((WandMenu) screen.getMenu()).breakpointIds.get().contains(i) ? 0xFFFF0000 :
+                int renderColor = ((WandScreen) screen).getMenu().breakpointIds.get().contains(i) ? 0xFFFF0000 :
                         new Color(mainColorInt()).toArgbWithAlphaMult(Math.clamp(1000 / distance, 0, 1.1));
 
                 renderNumber(graphics, tmp % 10, x, y, mouseX, mouseY, renderColor);
@@ -186,16 +187,16 @@ public class WandWidgets {
                 int i = this.i - (int) dx.get() / 16;
                 if (0 > i || i >= 1000) return false;
 
-                var breakpointIds = ((WandMenu) screen.getMenu()).breakpointIds.get();
+                var breakpointIds = ((WandScreen) screen).getMenu().breakpointIds.get();
                 boolean hasMarked = breakpointIds.contains(i);
 
                 if (hasMarked) breakpointIds.remove((Integer) i);
                 else breakpointIds.add(i);
 
-                ((WandMenu) screen.getMenu()).breakpointIds.set(breakpointIds);
+                ((WandScreen) screen).getMenu().breakpointIds.set(breakpointIds);
 
                 // 如果已经有法术正在执行, 增删断点提醒玩家只在下一个法术生效
-                if (((WandMenu) screen.getMenu()).currentSpellId.get() != -1)
+                if (((WandScreen) screen).getMenu().currentSpellId.get() != -1)
                     ((WandScreen) screen).notificationWidget.addWarning(Component.translatable("gui.arcanism.wand.inventory.debugger_breakpoint_effection_notifcation"));
                 return true;
             }
@@ -363,13 +364,13 @@ public class WandWidgets {
                 // 先过编译
                 var compiler = new SpellCompiler();
                 compiler.skipCompile = ((WandScreen) screen).bypassCompileWidget.isSelected;
-                compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+                compiler.compile(((WandScreen) screen).getMenu().storedSpells);
                 if (!compiler.errors.isEmpty()) {
                     for (SpellExceptions exception : compiler.errors)
                         ((WandScreen) screen).notificationWidget.addError(exception.message());
                     return false;
                 }
-                ((WandMenu) screen.getMenu()).releaseSpellHook.trigger(chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW / 20, ((WandScreen) screen).bypassCompileWidget.isSelected);
+                ((WandScreen) screen).getMenu().releaseSpellHook.trigger(chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW / 20, ((WandScreen) screen).bypassCompileWidget.isSelected);
                 chargedTick = 0;
             }
             return false;
@@ -409,7 +410,7 @@ public class WandWidgets {
         public void tick() {
             var compiler = new SpellCompiler();
 
-            compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+            compiler.compile(((WandScreen) screen).getMenu().storedSpells);
             errors = compiler.errors;
         }
     }
@@ -446,8 +447,8 @@ public class WandWidgets {
 
             for (Notification notification : List.copyOf(notifications).reversed()) {
                 // 平滑dy
-                notification.speed += (notification.targetDy - notification.dy) * 200 * screen.dt() - notification.speed * 30 * screen.dt();
-                notification.dy += notification.speed * screen.dt();
+                notification.speed += (notification.targetDy - notification.dy) * 200 * ((WidgetManager) screen).dt() - notification.speed * 30 * ((WidgetManager) screen).dt();
+                notification.dy += notification.speed * ((WidgetManager) screen).dt();
 
                 // 检查是否超时
                 double now = System.nanoTime() / 1e9;

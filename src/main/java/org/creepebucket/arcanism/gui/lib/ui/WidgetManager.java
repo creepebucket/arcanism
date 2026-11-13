@@ -1,6 +1,7 @@
 package org.creepebucket.arcanism.gui.lib.ui;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -19,7 +20,7 @@ public interface WidgetManager {
 
     void setRoot(Widget.Root root);
 
-    Screen<? extends Menu> getScreen();
+    Screen getScreen();
 
     default double dt() {
         return this.getRoot().dt;

@@ -38,7 +38,7 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> i
     }
 
     @Override
-    public Screen<? extends Menu> getScreen() {
+    public Screen<?> getScreen() {
         return this;
     }
 

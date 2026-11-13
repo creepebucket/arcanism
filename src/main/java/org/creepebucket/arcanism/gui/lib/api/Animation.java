@@ -210,4 +210,116 @@ public abstract class Animation {
             alphaMultText = 0;
         }
     }
+
+    public static class TransitionColor extends Animation {
+        public enum Target {
+            MAIN,
+            BG,
+            TEXT
+        }
+
+        public Target target;
+        public Color color;
+        public double fromHue, fromSaturation, fromValue, fromAlpha, toHue, toSaturation, toValue, toAlpha;
+
+        public TransitionColor(double duration, int newColor, Target target) {
+            this(duration, new Color(newColor), target);
+        }
+
+        public TransitionColor(double duration, Color newColor, Target target) {
+            this.duration = duration;
+            this.target = target;
+
+            var to = toHsv(newColor);
+            toHue = to[0];
+            toSaturation = to[1];
+            toValue = to[2];
+            toAlpha = newColor.a;
+        }
+
+        @Override
+        public void onStart(Widget widget) {
+            super.onStart(widget);
+
+            while (color == null) {
+                color = switch (target) {
+                    case MAIN -> widget.originalMainColor;
+                    case BG -> widget.originalBgColor;
+                    case TEXT -> widget.originalTextColor;
+                };
+                if (color == null) widget = widget.parent;
+            }
+
+            var from = toHsv(color);
+            fromSaturation = from[1];
+            fromHue = fromSaturation == 0 ? toHue : from[0];
+            fromValue = from[2];
+            fromAlpha = color.a;
+
+            if (toSaturation == 0) toHue = fromHue;
+        }
+
+        public static double[] toHsv(Color color) {
+            var r = color.r / 255.0;
+            var g = color.g / 255.0;
+            var b = color.b / 255.0;
+            var max = Math.max(r, Math.max(g, b));
+            var min = Math.min(r, Math.min(g, b));
+            var delta = max - min;
+
+            if (delta == 0) return new double[]{0, 0, max};
+
+            var hue = max == r ? (g - b) / delta : max == g ? (b - r) / delta + 2 : (r - g) / delta + 4;
+            if (hue < 0) hue += 6;
+            return new double[]{hue / 6, delta / max, max};
+        }
+
+        @Override
+        public void step(double dt) {
+            if (color == null) return;
+
+            var ratio = isExpired() ? 1 : Math.max(0, Math.min(1, (now() - start) / duration));
+
+            // 色相沿最短路径渐变
+            var hueDelta = toHue - fromHue;
+            if (hueDelta > 0.5) hueDelta -= 1;
+            else if (hueDelta < -0.5) hueDelta += 1;
+
+            var hue = (fromHue + hueDelta * ratio + 1) % 1;
+            var saturation = fromSaturation + (toSaturation - fromSaturation) * ratio;
+            var value = fromValue + (toValue - fromValue) * ratio;
+
+            var i = (int) (hue * 6);
+            var f = hue * 6 - i;
+            var p = value * (1 - saturation);
+            var q = value * (1 - f * saturation);
+            var t = value * (1 - (1 - f) * saturation);
+
+            color.r = (int) Math.round(switch (i % 6) {
+                case 0 -> value;
+                case 1 -> q;
+                case 2 -> p;
+                case 3 -> p;
+                case 4 -> t;
+                default -> value;
+            } * 255);
+            color.g = (int) Math.round(switch (i % 6) {
+                case 0 -> t;
+                case 1 -> value;
+                case 2 -> value;
+                case 3 -> q;
+                case 4 -> p;
+                default -> p;
+            } * 255);
+            color.b = (int) Math.round(switch (i % 6) {
+                case 0 -> p;
+                case 1 -> p;
+                case 2 -> t;
+                case 3 -> value;
+                case 4 -> value;
+                default -> q;
+            } * 255);
+            color.a = (int) Math.round(fromAlpha + (toAlpha - fromAlpha) * ratio);
+        }
+    }
 }

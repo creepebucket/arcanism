@@ -7,6 +7,7 @@ import org.creepebucket.arcanism.gui.lib.api.Coordinate;
 import org.creepebucket.arcanism.gui.lib.api.SmoothedValue;
 import org.creepebucket.arcanism.gui.lib.api.Widget;
 import org.creepebucket.arcanism.gui.lib.api.widgets.Renderable;
+import org.creepebucket.arcanism.gui.lib.ui.WidgetManager;
 
 
 import static net.minecraft.network.chat.Component.literal;
@@ -34,7 +35,7 @@ public class NumberDigitWidget extends Widget implements Renderable {
         int baseY = menuY() - dy.getInt();
         // 状态1：正在进行非数字切换动画（例如 空格 -> 1, 或者 5 -> .）
         if (isSwitching) {
-            textDy.doStep(screen.dt()); // 更新平滑动画步长
+            textDy.doStep(((WidgetManager) screen).dt()); // 更新平滑动画步长
 
             // 绘制旧字符（逐渐滑出）
             if (old != ' ')

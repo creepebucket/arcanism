@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.creepebucket.arcanism.gui.lib.api.*;
 import org.creepebucket.arcanism.gui.lib.api.widgets.*;
+import org.creepebucket.arcanism.gui.lib.ui.WidgetManager;
 import org.creepebucket.arcanism.gui.lib.widgets.*;
 import org.creepebucket.arcanism.utils.ModColors;
 import org.creepebucket.arcanism.utils.ModUtils;
@@ -29,7 +30,7 @@ public class MachineWidgets {
 
         @Override
         public void onInitialize() {
-            hintText = screen.addWidget(new TextWidget(fromCenter(0, 0), Component.translatable("gui.arcanism.machine.window.hint")).centerAlign().centerAlignY().mainColor(-1).disable());
+            hintText = ((WidgetManager) screen).addWidget(new TextWidget(fromCenter(0, 0), Component.translatable("gui.arcanism.machine.window.hint")).centerAlign().centerAlignY().mainColor(-1).disable());
         }
 
         @Override
@@ -543,7 +544,7 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            var slots = screen.getMenu().slots;
+            var slots = ((MachineScreen<?>) screen).getMenu().slots;
             for (int i = 0; i < 3; i++) for (int j = -4; j < 5; j++) {
                 addChild(new RectangleWidget(fromCenterTop(j * 18, i * 18 + 30), fromTopLeft(16, 1)).centerAlign().mainColor(0x1fffffff));
                 addChild(new SlotWidget(slots.get(i * 9 + j + 13), fromCenterTop(j * 18, i * 18 + 15)).centerAlign());
