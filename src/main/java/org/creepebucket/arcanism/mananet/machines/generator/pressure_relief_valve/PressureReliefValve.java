@@ -36,7 +36,7 @@ public class PressureReliefValve extends BasicMachine {
 		VoxelShape shape = Shapes.empty();
 
 		shape = Shapes.join(shape, Shapes.box(0.28125, 0.28125, 0.8125, 0.71875, 0.71875, 0.9375), BooleanOp.OR);
-		shape = Shapes.join(shape, Shapes.box(0.25, 0.25, 0.9375, 0.75, 0.75, 1.0625), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.25, 0.25, 0.9375, 0.75, 0.75, 1), BooleanOp.OR);
 		shape = Shapes.join(shape, Shapes.box(0.1875, 0.25, 0.1875, 0.8125, 0.875, 0.8125), BooleanOp.OR);
 		shape = Shapes.join(shape, Shapes.box(0.0625, 0, 0.0625, 0.9375, 0.25, 0.9375), BooleanOp.OR);
 		shape = Shapes.join(shape, Shapes.box(0.125, 0.875, 0.125, 0.875, 1.0625, 0.875), BooleanOp.OR);

@@ -110,6 +110,12 @@ public class DummyBlock extends Block {
     }
 
     @Override
+    protected float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos) {
+        var main_pos = get_main_pos(pos, state);
+        return level.getBlockState(main_pos).getDestroyProgress(player, level, main_pos);
+    }
+
+    @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         var main_pos = get_main_pos(pos, state);
         var main_state = level.getBlockState(main_pos);

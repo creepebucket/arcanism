@@ -32,51 +32,51 @@ public class MananetNodeBlocks {
 
     public static final DeferredBlock<WindTurbine> WIND_TURBINE =
             BLOCKS.register("wind_turbine", registryName -> new WindTurbine(
-                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<SolarPanel> SOLAR_PANEL =
             BLOCKS.register("solar_panel", registryName -> new SolarPanel(
-                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
 	public static final DeferredBlock<HeatExchanger> HEAT_EXCHANGER =
 			BLOCKS.register("heat_exchanger", registryName -> new HeatExchanger(
-					BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+					BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
 	public static final DeferredBlock<SteamTurbine> STEAM_TURBINE =
 			BLOCKS.register("steam_turbine", registryName -> new SteamTurbine(
-					BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+					BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
 	public static final DeferredBlock<PressureReliefValve> PRESSURE_RELIEF_VALVE =
 			BLOCKS.register("pressure_relief_valve", registryName -> new PressureReliefValve(
-					BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+					BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
 	public static final DeferredBlock<WaterPump> WATER_PUMP =
             BLOCKS.register("water_pump", registryName -> new WaterPump(
-                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<LiquidHeater> LIQUID_HEATER =
             BLOCKS.register("liquid_heater", registryName -> new LiquidHeater(
-                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<SmallManaBuffer> SMALL_MANA_BUFFER =
             BLOCKS.register("small_mana_buffer", registryName -> new SmallManaBuffer(
-                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<MediumManaBuffer> MEDIUM_MANA_BUFFER =
             BLOCKS.register("medium_mana_buffer", registryName -> new MediumManaBuffer(
-                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<LargeManaBuffer> LARGE_MANA_BUFFER =
             BLOCKS.register("large_mana_buffer", registryName -> new LargeManaBuffer(
-                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().strength(3.0F).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<DummyBlock> DUMMY_BLOCK =
             BLOCKS.register("dummy_block", registryName -> new DummyBlock(
-                    BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().forceSolidOn().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<IoDummyBlock> IO_DUMMY_BLOCK =
             BLOCKS.register("io_dummy_block", registryName -> new IoDummyBlock(
-                    BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
+                    BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().forceSolidOn().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
 
     public static final DeferredItem<BlockItem> WIND_TURBINE_BLOCK_ITEM =
