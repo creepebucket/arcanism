@@ -5,16 +5,19 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import org.creepebucket.arcanism.mananet.NetNodeBlockEntity;
 import org.creepebucket.arcanism.registries.ModAttachments;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class AbstractManaConnector extends Block implements EntityBlock {
@@ -60,4 +63,10 @@ public abstract class AbstractManaConnector extends Block implements EntityBlock
 		player.sendSystemMessage(Component.translatable("message.arcanism.connector.pending_set", pos.toShortString(), clickedFace.getName()));
 		return InteractionResult.CONSUME;
 	}
+
+	@Override
+	protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+		return List.of(new ItemStack(this));
+	}
+
 }
